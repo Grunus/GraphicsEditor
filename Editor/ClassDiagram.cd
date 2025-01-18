@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Editor.GraphicsEditorForm">
+    <Position X="0.5" Y="0.5" Width="3.5" />
+    <Members>
+      <Field Name="BackwardDiagonalGradToolStripMenuItem" Hidden="true" />
+      <Method Name="BackwardDiagonalGradToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="BoldFontToolStripMenuItem" Hidden="true" />
+      <Method Name="BoldFontToolStripMenuItem_CheckedChanged" Hidden="true" />
+      <Field Name="buttonArbitraryDrawing" Hidden="true" />
+      <Field Name="buttonChangeColors" Hidden="true" />
+      <Method Name="buttonChangeColors_Click" Hidden="true" />
+      <Field Name="buttonChangeFont" Hidden="true" />
+      <Method Name="buttonChangeFont_Click" Hidden="true" />
+      <Field Name="buttonChangeSize" Hidden="true" />
+      <Method Name="buttonChangeSize_Click" Hidden="true" />
+      <Field Name="buttonCopy" Hidden="true" />
+      <Method Name="buttonCopy_Click" Hidden="true" />
+      <Field Name="buttonCrop" Hidden="true" />
+      <Method Name="buttonCrop_Click" Hidden="true" />
+      <Field Name="buttonCurve" Hidden="true" />
+      <Field Name="buttonCutOut" Hidden="true" />
+      <Method Name="buttonCutOut_Click" Hidden="true" />
+      <Field Name="buttonDrawText" Hidden="true" />
+      <Field Name="buttonEllipse" Hidden="true" />
+      <Field Name="buttonEraser" Hidden="true" />
+      <Field Name="buttonFill" Hidden="true" />
+      <Field Name="buttonLine" Hidden="true" />
+      <Field Name="buttonPaste" Hidden="true" />
+      <Method Name="buttonPaste_Click" Hidden="true" />
+      <Field Name="buttonPasteFrom" Hidden="true" />
+      <Method Name="buttonPasteFrom_Click" Hidden="true" />
+      <Field Name="buttonPipette" Hidden="true" />
+      <Field Name="buttonPolygon" Hidden="true" />
+      <Field Name="buttonPrimaryColor" Hidden="true" />
+      <Method Name="buttonPrimaryColor_Click" Hidden="true" />
+      <Method Name="buttonPrimaryColorUpdate" Hidden="true" />
+      <Field Name="buttonRectangle" Hidden="true" />
+      <Field Name="buttonRhomb" Hidden="true" />
+      <Field Name="buttonSecondaryColor" Hidden="true" />
+      <Method Name="buttonSecondaryColor_Click" Hidden="true" />
+      <Method Name="buttonSecondaryColorUpdate" Hidden="true" />
+      <Field Name="buttonTriangle" Hidden="true" />
+      <Field Name="CanvasGroupBox" Hidden="true" />
+      <Field Name="CanvasMouseLocationToolStripStatusLabel" Hidden="true" />
+      <Field Name="CanvasSizeToolStripStatusLabel" Hidden="true" />
+      <Field Name="changeSizeForm" Hidden="true" />
+      <Field Name="ClipboardGroupBox" Hidden="true" />
+      <Field Name="ColorsGroupBox" Hidden="true" />
+      <Field Name="components" Hidden="true" />
+      <Field Name="CreateFileToolStripMenuItem" Hidden="true" />
+      <Method Name="CreateFileToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="CrossedOutTextToolStripMenuItem" Hidden="true" />
+      <Method Name="CrossedOutTextToolStripMenuItem_CheckedChanged" Hidden="true" />
+      <Field Name="DefaultZoomToolStripMenuItem" Hidden="true" />
+      <Method Name="DefaultZoomToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="DeleteSelectAreaToolStripMenuItem" Hidden="true" />
+      <Method Name="DeleteSelectAreaToolStripMenuItem_Click" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Field Name="DrawingGroupBox" Hidden="true" />
+      <Field Name="FileAndViewMenuStrip" Hidden="true" />
+      <Field Name="FileToolStripMenuItem" Hidden="true" />
+      <Field Name="FontEffectsMenuStrip" Hidden="true" />
+      <Field Name="FontEffectsToolStripMenuItem" Hidden="true" />
+      <Field Name="ForwardDiagonalGradToolStripMenuItem" Hidden="true" />
+      <Method Name="ForwardDiagonalGradToolStripMenuItem_Click" Hidden="true" />
+      <Method Name="GraphicsEditorForm_KeyDown" Hidden="true" />
+      <Field Name="GridToolStripMenuItem" Hidden="true" />
+      <Method Name="GridToolStripMenuItem_CheckedChanged" Hidden="true" />
+      <Field Name="HorizontalGradToolStripMenuItem" Hidden="true" />
+      <Method Name="HorizontalGradToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="InfoStatusStrip" Hidden="true" />
+      <Method Name="InitializeComponent" Hidden="true" />
+      <Field Name="ItalicFontToolStripMenuItem" Hidden="true" />
+      <Method Name="ItalicFontToolStripMenuItem_CheckedChanged" Hidden="true" />
+      <Field Name="labelFontSize" Hidden="true" />
+      <Field Name="labelPaintToolThickness" Hidden="true" />
+      <Field Name="labelSelectedFont" Hidden="true" />
+      <Field Name="labelSelectedPaintTool" Hidden="true" />
+      <Field Name="LinearGradientDirectionMenuStrip" Hidden="true" />
+      <Field Name="LinearGradientDirectionToolStripMenuItem" Hidden="true" />
+      <Field Name="LinearGradientFillToolStripMenuItem" Hidden="true" />
+      <Method Name="LinearGradientFillToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="MainSpace" Hidden="true" />
+      <Method Name="MainSpace_MouseWheel" Hidden="true" />
+      <Field Name="Menu" Hidden="true" />
+      <Field Name="MirrorHorizontallyToolStripMenuItem" Hidden="true" />
+      <Method Name="MirrorHorizontallyToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="MirrorVerticallyToolStripMenuItem" Hidden="true" />
+      <Method Name="MirrorVerticallyToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="NinetyDegToTheLeftToolStripMenuItem" Hidden="true" />
+      <Method Name="NinetyDegToTheLeftToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="NinetyDegToTheRightToolStripMenuItem" Hidden="true" />
+      <Method Name="NinetyDegToTheRightToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="NoFillToolStripMenuItem" Hidden="true" />
+      <Method Name="NoFillToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="OneHundredEightyDegTurnToolStripMenuItem" Hidden="true" />
+      <Method Name="OneHundredEightyDegTurnToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="OpenFileToolStripMenuItem" Hidden="true" />
+      <Method Name="OpenFileToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="PaintToolThicknessComboBox" Hidden="true" />
+      <Method Name="PaintToolThicknessComboBox_SelectedIndexChanged" Hidden="true" />
+      <Field Name="PanelMenu" Hidden="true" />
+      <Field Name="pictureBoxFiller" Hidden="true" />
+      <Field Name="pictureBoxRulerLeft" Hidden="true" />
+      <Field Name="pictureBoxRulerTop" Hidden="true" />
+      <Method Name="PreventDropDownFromClosing" Hidden="true" />
+      <Field Name="RectangleSelectionToolStripMenuItem" Hidden="true" />
+      <Method Name="RectangleSelectionToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="RedoButton" Hidden="true" />
+      <Method Name="RedoButton_Click" Hidden="true" />
+      <Method Name="RemoveSelectAreaOutOfBoundsClickHandlerRecursive" Hidden="true" />
+      <Method Name="RemoveTextAreaOutOfBoundsClickHandlerRecursive" Hidden="true" />
+      <Field Name="ReverseSelectedAreaToolStripMenuItem" Hidden="true" />
+      <Method Name="ReverseSelectedAreaToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="RotateFlipMenuStrip" Hidden="true" />
+      <Field Name="RotateFlipToolStripMenuItem" Hidden="true" />
+      <Field Name="RulersToolStripMenuItem" Hidden="true" />
+      <Method Name="RulersToolStripMenuItem_CheckedChanged" Hidden="true" />
+      <Field Name="SaveFileHowToolStripMenuItem" Hidden="true" />
+      <Method Name="SaveFileHowToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="SaveFileToolStripMenuItem" Hidden="true" />
+      <Method Name="SaveFileToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="SelectAllToolStripMenuItem" Hidden="true" />
+      <Method Name="SelectAllToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="SelectAreaImageSizeToolStripStatusLabel" Hidden="true" />
+      <Field Name="SelectedPaintToolComboBox" Hidden="true" />
+      <Method Name="SelectedPaintToolComboBox_SelectedIndexChanged" Hidden="true" />
+      <Field Name="SelectionMenuStrip" Hidden="true" />
+      <Field Name="SelectionToolStripMenuItem" Hidden="true" />
+      <Field Name="ShapeFillMenuStrip" Hidden="true" />
+      <Field Name="ShapeFillToolStripMenuItem" Hidden="true" />
+      <Field Name="ShapeOutlineMenuStrip" Hidden="true" />
+      <Field Name="ShapeOutlineToolStripMenuItem" Hidden="true" />
+      <Field Name="ShapesGroupBox" Hidden="true" />
+      <Field Name="SolidColorFillToolStripMenuItem" Hidden="true" />
+      <Method Name="SolidColorFillToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="StripMenu" Hidden="true" />
+      <Field Name="TextGroupBox" Hidden="true" />
+      <Field Name="ToolsGroupBox" Hidden="true" />
+      <Field Name="toolStripSeparator1" Hidden="true" />
+      <Field Name="UnderlinedTextToolStripMenuItem" Hidden="true" />
+      <Method Name="UnderlinedTextToolStripMenuItem_CheckedChanged" Hidden="true" />
+      <Field Name="UndoButton" Hidden="true" />
+      <Method Name="UndoButton_Click" Hidden="true" />
+      <Field Name="UndoRedoToolStrip" Hidden="true" />
+      <Field Name="VerticalGradToolStripMenuItem" Hidden="true" />
+      <Method Name="VerticalGradToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="ViewToolStripMenuItem" Hidden="true" />
+      <Field Name="WithOutlineToolStripMenuItem" Hidden="true" />
+      <Method Name="WithOutlineToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="WithoutOutlineToolStripMenuItem" Hidden="true" />
+      <Method Name="WithoutOutlineToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="ZoomFactorToolStripStatusLabel" Hidden="true" />
+      <Field Name="ZoomInToolStripMenuItem" Hidden="true" />
+      <Method Name="ZoomInToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="ZoomOutToolStripMenuItem" Hidden="true" />
+      <Method Name="ZoomOutToolStripMenuItem_Click" Hidden="true" />
+      <Field Name="ZoomToolStripMenuItem" Hidden="true" />
+    </Members>
+    <NestedTypes>
+      <Class Name="Editor.GraphicsEditorForm.CustomToolStripRenderer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GraphicsEditorForm.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>pH7T2bWLmymheP8cwv7yu/trBoWoKguvSOhCEq7jiQs=</HashCode>
+      <FileName>GraphicsEditorForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Editor.ChangeSizeForm">
+    <Position X="0.5" Y="6.5" Width="3.5" />
+    <Members>
+      <Field Name="buttonCancel" Hidden="true" />
+      <Field Name="buttonOK" Hidden="true" />
+      <Field Name="components" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Method Name="InitializeComponent" Hidden="true" />
+      <Field Name="KeepTheProportionsCheckBox" Hidden="true" />
+      <Field Name="label1" Hidden="true" />
+      <Field Name="label2" Hidden="true" />
+      <Field Name="label3" Hidden="true" />
+      <Field Name="label4" Hidden="true" />
+      <Field Name="label5" Hidden="true" />
+      <Field Name="maskedTextBoxHeight" Hidden="true" />
+      <Field Name="maskedTextBoxWidth" Hidden="true" />
+      <Field Name="radioButtonPercents" Hidden="true" />
+      <Field Name="radioButtonPixels" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AIAAEAAAAmIAABAAAASABQACACAAAAAAgKFAAAEABAA=</HashCode>
+      <FileName>ChangeSizeForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Library.StaticClasses.AppState">
+    <Position X="7" Y="0.5" Width="1.75" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.ArbitraryDrawingHelper">
+    <Position X="9" Y="0.5" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.CropTool">
+    <Position X="14" Y="7" Width="2" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.CurveDrawHelper">
+    <Position X="9" Y="3" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.EraserTool">
+    <Position X="11.5" Y="5.75" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.FileHelper">
+    <Position X="16.25" Y="4.25" Width="1.75" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.FillTool">
+    <Position X="11.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.MouseTracker">
+    <Position X="7" Y="4" Width="1.75" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.OrdinaryShapeDrawHelper">
+    <Position X="9" Y="1.75" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.PaintTools">
+    <Position X="7" Y="7.5" Width="1.75" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.PipetteTool">
+    <Position X="11.5" Y="4.5" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.PolygonDrawHelper">
+    <Position X="9" Y="5.5" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.CustomControls.CanvasView">
+    <Position X="4.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.CustomControls.SelectArea">
+    <Position X="4.25" Y="6.75" Width="2.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.CustomControls.TextArea">
+    <Position X="4.25" Y="3.75" Width="2.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.ZoomHelper">
+    <Position X="16.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.UndoRedoHelper">
+    <Position X="16.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.TextDrawHelper">
+    <Position X="11.5" Y="1.75" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.SelectTool">
+    <Position X="14" Y="0.5" Width="2" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.RotateAndMirrorHelper">
+    <Position X="14" Y="3.5" Width="2" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Library.StaticClasses.ResizeHelper">
+    <Position X="14" Y="5.25" Width="2" />
+    <TypeIdentifier />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
