@@ -6,9 +6,9 @@
         {
             Color selectedColor = canvas.GetPixel(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y);
             if (MouseTracker.PressedButton == MouseButtons.Left)
-                AppState.PrimaryColor = selectedColor;
+                AppManager.PrimaryColor = selectedColor;
             else if (MouseTracker.PressedButton == MouseButtons.Right)
-                AppState.SecondaryColor = selectedColor;
+                AppManager.SecondaryColor = selectedColor;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Library.StaticClasses
             if (MouseTracker.HorizontalDistance == 0 || MouseTracker.VerticalDistance == 0)
                 return;
 
-            Tool = (Pen)AppState.SelectedTool.Clone();
+            Tool = (Pen)AppManager.SelectedTool.Clone();
             SetThickness();
             DetermineColor();
 
@@ -24,13 +24,14 @@ namespace Library.StaticClasses
                 LinearGradientFillBrush = new LinearGradientBrush(new RectangleF(MouseTracker.MouseDownPoint.X, 
                     MouseTracker.MouseDownPoint.Y, MouseTracker.HorizontalDistance, 
                     MouseTracker.VerticalDistance), SolidFillBrush.Color, Color.FromArgb(0, SolidFillBrush.Color), 
-                    AppState.SelectedShapeFillLinearGradientMode);
+                    AppManager.SelectedShapeFillLinearGradientMode);
             else
-                LinearGradientFillBrush = new LinearGradientBrush(new RectangleF(MouseTracker.MouseDownPoint.X * AppState.ZoomFactor, 
-                    MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor, MouseTracker.HorizontalDistance * AppState.ZoomFactor, 
-                    MouseTracker.VerticalDistance * AppState.ZoomFactor), SolidFillBrush.Color, Color.FromArgb(0, SolidFillBrush.Color), 
-                    AppState.SelectedShapeFillLinearGradientMode);
+                LinearGradientFillBrush = new LinearGradientBrush(new RectangleF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, 
+                    MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor, MouseTracker.HorizontalDistance * AppManager.ZoomFactor, 
+                    MouseTracker.VerticalDistance * AppManager.ZoomFactor), SolidFillBrush.Color, Color.FromArgb(0, SolidFillBrush.Color), 
+                    AppManager.SelectedShapeFillLinearGradientMode);
 
+            var savedGraphicsState = graphics.Save();
             ConfigureGraphics(graphics);
 
             if (drawActualShape)
@@ -38,14 +39,14 @@ namespace Library.StaticClasses
             else
                 DrawTemporaryShape(graphics);
 
-            UnconfigureGraphics(graphics);
+            graphics.Restore(savedGraphicsState);
         }
 
         private static void DrawActualShape(Graphics graphics)
         {
             GraphicsPath path = new GraphicsPath();
 
-            switch (AppState.SelectedShape)
+            switch (AppManager.SelectedShape)
             {
                 case OrdinaryShape.Line:
                     path.AddLine(
@@ -135,135 +136,129 @@ namespace Library.StaticClasses
         {
             GraphicsPath path = new GraphicsPath();
 
-            switch (AppState.SelectedShape)
+            switch (AppManager.SelectedShape)
             {
                 case OrdinaryShape.Line:
                     path.AddLine(
-                            MouseTracker.MouseDownPoint.X * AppState.ZoomFactor,
-                            MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor,
-                            MouseTracker.MouseMovePoint.X * AppState.ZoomFactor,
-                            MouseTracker.MouseMovePoint.Y * AppState.ZoomFactor);
+                            MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor,
+                            MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor,
+                            MouseTracker.MouseMovePoint.X * AppManager.ZoomFactor,
+                            MouseTracker.MouseMovePoint.Y * AppManager.ZoomFactor);
                     break;
                 case OrdinaryShape.Ellipse:
                     path.AddEllipse(
-                            MouseTracker.MouseDownPoint.X * AppState.ZoomFactor,
-                            MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor,
-                            MouseTracker.HorizontalDistance * AppState.ZoomFactor,
-                            MouseTracker.VerticalDistance * AppState.ZoomFactor);
+                            MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor,
+                            MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor,
+                            MouseTracker.HorizontalDistance * AppManager.ZoomFactor,
+                            MouseTracker.VerticalDistance * AppManager.ZoomFactor);
                     break;
                 case OrdinaryShape.Rectangle:
                     if (MouseTracker.HorizontalDistance < 0 && MouseTracker.VerticalDistance > 0)
                         path.AddRectangle(new RectangleF(
-                                (MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppState.ZoomFactor,
-                                MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor,
-                                Math.Abs(MouseTracker.HorizontalDistance) * AppState.ZoomFactor,
-                                MouseTracker.VerticalDistance * AppState.ZoomFactor));
+                                (MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.ZoomFactor,
+                                MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor,
+                                Math.Abs(MouseTracker.HorizontalDistance) * AppManager.ZoomFactor,
+                                MouseTracker.VerticalDistance * AppManager.ZoomFactor));
                     else if (MouseTracker.HorizontalDistance > 0 && MouseTracker.VerticalDistance < 0)
                         path.AddRectangle(new RectangleF(
-                                MouseTracker.MouseDownPoint.X * AppState.ZoomFactor,
-                                (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor,
-                                MouseTracker.HorizontalDistance * AppState.ZoomFactor,
-                                Math.Abs(MouseTracker.VerticalDistance) * AppState.ZoomFactor));
+                                MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor,
+                                (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor,
+                                MouseTracker.HorizontalDistance * AppManager.ZoomFactor,
+                                Math.Abs(MouseTracker.VerticalDistance) * AppManager.ZoomFactor));
                     else if (MouseTracker.HorizontalDistance < 0 && MouseTracker.VerticalDistance < 0)
                         path.AddRectangle(new RectangleF(
-                                (MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppState.ZoomFactor,
-                                (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor,
-                                Math.Abs(MouseTracker.HorizontalDistance) * AppState.ZoomFactor,
-                                Math.Abs(MouseTracker.VerticalDistance) * AppState.ZoomFactor));
+                                (MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.ZoomFactor,
+                                (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor,
+                                Math.Abs(MouseTracker.HorizontalDistance) * AppManager.ZoomFactor,
+                                Math.Abs(MouseTracker.VerticalDistance) * AppManager.ZoomFactor));
                     else
                         path.AddRectangle(new RectangleF(
-                                MouseTracker.MouseDownPoint.X * AppState.ZoomFactor,
-                                MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor,
-                                MouseTracker.HorizontalDistance * AppState.ZoomFactor,
-                                MouseTracker.VerticalDistance * AppState.ZoomFactor));
+                                MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor,
+                                MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor,
+                                MouseTracker.HorizontalDistance * AppManager.ZoomFactor,
+                                MouseTracker.VerticalDistance * AppManager.ZoomFactor));
                     break;
                 case OrdinaryShape.Triangle:
                     if (MouseTracker.HorizontalDistance < 0 && MouseTracker.VerticalDistance > 0)
-                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor),
-                        new PointF(MouseTracker.MouseDownPoint.X * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor)]);
+                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor),
+                        new PointF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor)]);
                     else if (MouseTracker.HorizontalDistance > 0 && MouseTracker.VerticalDistance < 0)
-                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor),
-                        new PointF(MouseTracker.MouseDownPoint.X * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor)]);
+                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor),
+                        new PointF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor)]);
                     else if (MouseTracker.HorizontalDistance < 0 && MouseTracker.VerticalDistance < 0)
-                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor),
-                        new PointF(MouseTracker.MouseDownPoint.X * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor)]);
+                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor),
+                        new PointF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor)]);
                     else
-                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor),
-                        new PointF(MouseTracker.MouseDownPoint.X * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor)]);
+                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor),
+                        new PointF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor)]);
                     break;
                 case OrdinaryShape.Rhomb:
                     if (MouseTracker.HorizontalDistance < 0 && MouseTracker.VerticalDistance > 0)
-                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor),
-                        new PointF(MouseTracker.MouseDownPoint.X * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppState.ZoomFactor)]);
+                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor),
+                        new PointF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppManager.ZoomFactor)]);
                     else if (MouseTracker.HorizontalDistance > 0 && MouseTracker.VerticalDistance < 0)
-                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor),
-                        new PointF(MouseTracker.MouseDownPoint.X * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppState.ZoomFactor)]);
+                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor),
+                        new PointF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppManager.ZoomFactor)]);
                     else if (MouseTracker.HorizontalDistance < 0 && MouseTracker.VerticalDistance < 0)
-                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor),
-                        new PointF(MouseTracker.MouseDownPoint.X * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppState.ZoomFactor)]);
+                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor),
+                        new PointF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppManager.ZoomFactor)]);
                     else
-                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor),
-                        new PointF(MouseTracker.MouseDownPoint.X * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppState.ZoomFactor),
-                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppState.ZoomFactor)]);
+                        path.AddPolygon([new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor),
+                        new PointF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance / 2.0f) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.ZoomFactor),
+                        new PointF((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance / 2.0f) * AppManager.ZoomFactor)]);
                     break;
             }
-            Tool.Width *= AppState.ZoomFactor;
+            Tool.Width *= AppManager.ZoomFactor;
             Draw(graphics, path);
         }
 
-        private static void SetThickness() => Tool.Width = AppState.ToolThickness;
+        private static void SetThickness() => Tool.Width = AppManager.ToolThickness;
 
         private static void DetermineColor()
         {
             if (MouseTracker.PressedButton == MouseButtons.Left)
             {
-                Tool.Color = AppState.PrimaryColor;
-                SolidFillBrush.Color = AppState.SecondaryColor;
+                Tool.Color = AppManager.PrimaryColor;
+                SolidFillBrush.Color = AppManager.SecondaryColor;
             }
             else if (MouseTracker.PressedButton == MouseButtons.Right)
             {
-                Tool.Color = AppState.SecondaryColor;
-                SolidFillBrush.Color = AppState.PrimaryColor;
+                Tool.Color = AppManager.SecondaryColor;
+                SolidFillBrush.Color = AppManager.PrimaryColor;
             }
         }
 
         private static void ConfigureGraphics(Graphics graphics)
         {
-            if (AppState.SelectedTool == PaintTools.Pen)
+            if (AppManager.SelectedTool == PaintTools.Pen)
                 graphics.SmoothingMode = SmoothingMode.AntiAlias;
-        }
-
-        private static void UnconfigureGraphics(Graphics graphics)
-        {
-            if (AppState.SelectedTool == PaintTools.Pen)
-                graphics.SmoothingMode = SmoothingMode.None;
         }
 
         private static void Draw(Graphics graphics, GraphicsPath path)
         {
-            if (AppState.SelectedShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
+            if (AppManager.SelectedShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
                 return;
 
-            if (AppState.SelectedShapeDrawMode != ShapeDrawMode.OnlyOutline)
+            if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyOutline)
             {
-                if (AppState.SelectedShapeFillMode == ShapeFillMode.Solid)
+                if (AppManager.SelectedShapeFillMode == ShapeFillMode.Solid)
                     graphics.FillPath(SolidFillBrush, path);
-                else if (AppState.SelectedShapeFillMode == ShapeFillMode.LinearGradient)
+                else if (AppManager.SelectedShapeFillMode == ShapeFillMode.LinearGradient)
                     graphics.FillPath(LinearGradientFillBrush, path);
             }
 
-            if (AppState.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
+            if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
                 graphics.DrawPath(Tool, path);
         }
     }

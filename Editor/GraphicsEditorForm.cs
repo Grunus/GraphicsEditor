@@ -24,7 +24,7 @@ namespace Editor
             typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, MainSpace, [true]);
 
             canvasView = new CanvasView();
-            canvasView.Size = AppState.DefaultCanvasSize;
+            canvasView.Size = AppManager.DefaultCanvasSize;
             canvasView.Top = 5;
             canvasView.Left = 5;
             canvasView.BackColor = Color.White;
@@ -78,19 +78,19 @@ namespace Editor
                     switch (button.Name)
                     {
                         case "buttonArbitraryDrawing":
-                            AppState.CurrentActionMode = ActionMode.ArbitraryDrawing;
+                            AppManager.CurrentActionMode = ActionMode.ArbitraryDrawing;
                             break;
                         case "buttonFill":
-                            AppState.CurrentActionMode = ActionMode.Fill;
+                            AppManager.CurrentActionMode = ActionMode.Fill;
                             break;
                         case "buttonDrawText":
-                            AppState.CurrentActionMode = ActionMode.DrawText;
+                            AppManager.CurrentActionMode = ActionMode.DrawText;
                             break;
                         case "buttonEraser":
-                            AppState.CurrentActionMode = ActionMode.Eraser;
+                            AppManager.CurrentActionMode = ActionMode.Eraser;
                             break;
                         case "buttonPipette":
-                            AppState.CurrentActionMode = ActionMode.Pipette;
+                            AppManager.CurrentActionMode = ActionMode.Pipette;
                             break;
                     }
                 };
@@ -119,30 +119,30 @@ namespace Editor
                         switch (((Button)sender).Name)
                         {
                             case "buttonLine":
-                                AppState.CurrentActionMode = ActionMode.DrawOrdinaryShape;
-                                AppState.SelectedShape = OrdinaryShape.Line;
+                                AppManager.CurrentActionMode = ActionMode.DrawOrdinaryShape;
+                                AppManager.SelectedShape = OrdinaryShape.Line;
                                 break;
                             case "buttonCurve":
-                                AppState.CurrentActionMode = ActionMode.DrawCurve;
+                                AppManager.CurrentActionMode = ActionMode.DrawCurve;
                                 break;
                             case "buttonEllipse":
-                                AppState.CurrentActionMode = ActionMode.DrawOrdinaryShape;
-                                AppState.SelectedShape = OrdinaryShape.Ellipse;
+                                AppManager.CurrentActionMode = ActionMode.DrawOrdinaryShape;
+                                AppManager.SelectedShape = OrdinaryShape.Ellipse;
                                 break;
                             case "buttonTriangle":
-                                AppState.CurrentActionMode = ActionMode.DrawOrdinaryShape;
-                                AppState.SelectedShape = OrdinaryShape.Triangle;
+                                AppManager.CurrentActionMode = ActionMode.DrawOrdinaryShape;
+                                AppManager.SelectedShape = OrdinaryShape.Triangle;
                                 break;
                             case "buttonRectangle":
-                                AppState.CurrentActionMode = ActionMode.DrawOrdinaryShape;
-                                AppState.SelectedShape = OrdinaryShape.Rectangle;
+                                AppManager.CurrentActionMode = ActionMode.DrawOrdinaryShape;
+                                AppManager.SelectedShape = OrdinaryShape.Rectangle;
                                 break;
                             case "buttonRhomb":
-                                AppState.CurrentActionMode = ActionMode.DrawOrdinaryShape;
-                                AppState.SelectedShape = OrdinaryShape.Rhomb;
+                                AppManager.CurrentActionMode = ActionMode.DrawOrdinaryShape;
+                                AppManager.SelectedShape = OrdinaryShape.Rhomb;
                                 break;
                             case "buttonPolygon":
-                                AppState.CurrentActionMode = ActionMode.DrawPolygon;
+                                AppManager.CurrentActionMode = ActionMode.DrawPolygon;
                                 break;
                         }
                     };
@@ -162,15 +162,15 @@ namespace Editor
 
             FontEffectsMenuStrip.Renderer = myToolStripRenderer;
             FontEffectsToolStripMenuItem.DropDown.Closing += PreventDropDownFromClosing;
-            labelSelectedFont.Text += " " + AppState.FontForDrawingText.Name;
-            labelFontSize.Text += " " + AppState.FontForDrawingText.Size.ToString();
+            labelSelectedFont.Text += " " + AppManager.FontForDrawingText.Name;
+            labelFontSize.Text += " " + AppManager.FontForDrawingText.Size.ToString();
 
             fastTimer.Interval = 8;
             fastTimer.Tick += (sender, e) =>
             {
                 var pos = canvasView.PointToClient(Cursor.Position);
                 if (canvasView.ClientRectangle.Contains(pos))
-                    CanvasMouseLocationToolStripStatusLabel.Text = ((int)Math.Round(pos.X / AppState.ZoomFactor)).ToString() + ", " + ((int)Math.Round(pos.Y / AppState.ZoomFactor)).ToString() + "���";
+                    CanvasMouseLocationToolStripStatusLabel.Text = ((int)Math.Round(pos.X / AppManager.ZoomFactor)).ToString() + ", " + ((int)Math.Round(pos.Y / AppManager.ZoomFactor)).ToString() + "���";
                 else
                     CanvasMouseLocationToolStripStatusLabel.Text = "";
 
@@ -186,16 +186,16 @@ namespace Editor
             slowTimer.Tick += (sender, e) =>
             {
                 if (SelectTool.AlreadySelected)
-                    SelectAreaImageSizeToolStripStatusLabel.Text = ((int)Math.Round(SelectTool.SelectArea.Width / AppState.ZoomFactor)).ToString() + " x " + ((int)Math.Round(SelectTool.SelectArea.Height / AppState.ZoomFactor)).ToString();
+                    SelectAreaImageSizeToolStripStatusLabel.Text = ((int)Math.Round(SelectTool.SelectArea.Width / AppManager.ZoomFactor)).ToString() + " x " + ((int)Math.Round(SelectTool.SelectArea.Height / AppManager.ZoomFactor)).ToString();
                 else
                     SelectAreaImageSizeToolStripStatusLabel.Text = "";
 
                 if (!canvasView.IsResizing)
                     CanvasSizeToolStripStatusLabel.Text = canvas.Width.ToString() + " x " + canvas.Height.ToString();
                 else
-                    CanvasSizeToolStripStatusLabel.Text = ((int)Math.Round(canvasView.PointForResizing.X / AppState.ZoomFactor)).ToString() + " x " + ((int)Math.Round(canvasView.PointForResizing.Y / AppState.ZoomFactor)).ToString();
+                    CanvasSizeToolStripStatusLabel.Text = ((int)Math.Round(canvasView.PointForResizing.X / AppManager.ZoomFactor)).ToString() + " x " + ((int)Math.Round(canvasView.PointForResizing.Y / AppManager.ZoomFactor)).ToString();
 
-                ZoomFactorToolStripStatusLabel.Text = "�������: " + (AppState.ZoomFactor * 100).ToString() + " %";
+                ZoomFactorToolStripStatusLabel.Text = "�������: " + (AppManager.ZoomFactor * 100).ToString() + " %";
 
                 if (Clipboard.ContainsImage())
                     buttonPaste.Enabled = true;
@@ -264,9 +264,9 @@ namespace Editor
         #region View menu
         private void ZoomInToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (AppState.ZoomFactor < 8.0f)
+            if (AppManager.ZoomFactor < 8.0f)
             {
-                AppState.ZoomFactor *= 2;
+                AppManager.ZoomFactor *= 2;
                 ZoomHelper.Activate(canvasView);
                 if (TextDrawHelper.IsActive)
                     TextDrawHelper.AdjustTextArea();
@@ -275,9 +275,9 @@ namespace Editor
 
         private void ZoomOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (AppState.ZoomFactor > 0.125f)
+            if (AppManager.ZoomFactor > 0.125f)
             {
-                AppState.ZoomFactor /= 2;
+                AppManager.ZoomFactor /= 2;
                 ZoomHelper.Activate(canvasView);
                 if (TextDrawHelper.IsActive)
                     TextDrawHelper.AdjustTextArea();
@@ -286,7 +286,7 @@ namespace Editor
 
         private void DefaultZoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AppState.ZoomFactor = 1.0f;
+            AppManager.ZoomFactor = 1.0f;
             ZoomHelper.Activate(canvasView);
             if (TextDrawHelper.IsActive)
                 TextDrawHelper.AdjustTextArea();
@@ -298,29 +298,29 @@ namespace Editor
             {
                 pictureBoxRulerLeft.Visible = true;
                 pictureBoxRulerTop.Visible = true;
-                float temp = AppState.ZoomFactor;
-                AppState.ZoomFactor = 1.0f;
+                float temp = AppManager.ZoomFactor;
+                AppManager.ZoomFactor = 1.0f;
                 ZoomHelper.Activate(canvasView);
                 canvasView.Location = new Point(30, 30);
-                AppState.ZoomFactor = temp;
+                AppManager.ZoomFactor = temp;
                 ZoomHelper.Activate(canvasView);
             }
             else
             {
                 pictureBoxRulerLeft.Visible = false;
                 pictureBoxRulerTop.Visible = false;
-                float temp = AppState.ZoomFactor;
-                AppState.ZoomFactor = 1.0f;
+                float temp = AppManager.ZoomFactor;
+                AppManager.ZoomFactor = 1.0f;
                 ZoomHelper.Activate(canvasView);
                 canvasView.Location = new Point(5, 5);
-                AppState.ZoomFactor = temp;
+                AppManager.ZoomFactor = temp;
                 ZoomHelper.Activate(canvasView);
             }
         }
 
         private void GridToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            AppState.GridEnabled = GridToolStripMenuItem.Checked;
+            AppManager.GridEnabled = GridToolStripMenuItem.Checked;
             canvasView.Refresh();
         }
 
@@ -342,14 +342,14 @@ namespace Editor
         #region Clipboard menu
         private void buttonPaste_Click(object sender, EventArgs e)
         {
-            AppState.CurrentActionMode = ActionMode.Select;
+            AppManager.CurrentActionMode = ActionMode.Select;
             if (SelectTool.AlreadySelected)
             {
                 RemoveSelectAreaOutOfBoundsClickHandlerRecursive(Controls);
                 SelectTool.SelectAreaDispose(canvasView, canvas);
             }
             Bitmap tempBitmap = new Bitmap(Clipboard.GetImage());
-            Size tempSize = new Size((int)Math.Round(tempBitmap.Width * AppState.ZoomFactor), (int)Math.Round(tempBitmap.Height * AppState.ZoomFactor));
+            Size tempSize = new Size((int)Math.Round(tempBitmap.Width * AppManager.ZoomFactor), (int)Math.Round(tempBitmap.Height * AppManager.ZoomFactor));
             if (tempSize.Width > canvasView.Width || tempSize.Height > canvasView.Width)
                 canvasView.Size = tempSize;
             SelectTool.SelectPastedImage(canvasView, tempBitmap);
@@ -369,14 +369,14 @@ namespace Editor
             ofd.FilterIndex = 4;
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                AppState.CurrentActionMode = ActionMode.Select;
+                AppManager.CurrentActionMode = ActionMode.Select;
                 if (SelectTool.AlreadySelected)
                 {
                     RemoveSelectAreaOutOfBoundsClickHandlerRecursive(Controls);
                     SelectTool.SelectAreaDispose(canvasView, canvas);
                 }
                 Bitmap tempBitmap = new Bitmap(ofd.FileName);
-                Size tempSize = new Size((int)Math.Round(tempBitmap.Width * AppState.ZoomFactor), (int)Math.Round(tempBitmap.Height * AppState.ZoomFactor));
+                Size tempSize = new Size((int)Math.Round(tempBitmap.Width * AppManager.ZoomFactor), (int)Math.Round(tempBitmap.Height * AppManager.ZoomFactor));
                 if (tempSize.Width > canvasView.Width || tempSize.Height > canvasView.Width)
                     canvasView.Size = tempSize;
                 SelectTool.SelectPastedImage(canvasView, tempBitmap);
@@ -419,7 +419,7 @@ namespace Editor
                 SelectTool.SelectAreaDispose(canvasView, canvas);
                 RemoveSelectAreaOutOfBoundsClickHandlerRecursive(Controls);
             }
-            AppState.CurrentActionMode = ActionMode.Select;
+            AppManager.CurrentActionMode = ActionMode.Select;
         }
 
         private void SelectAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -435,7 +435,7 @@ namespace Editor
                 if (control.GetType() == typeof(Button))
                     control.BackColor = SystemColors.Control;
             }
-            AppState.CurrentActionMode = ActionMode.Select;
+            AppManager.CurrentActionMode = ActionMode.Select;
             if (SelectTool.AlreadySelected)
             {
                 SelectTool.SelectAreaDispose(canvasView, canvas);
@@ -549,7 +549,7 @@ namespace Editor
                         control.BackColor = SystemColors.Control;
                 }
                 buttonCrop.BackColor = SystemColors.GradientActiveCaption;
-                AppState.CurrentActionMode = ActionMode.Crop;
+                AppManager.CurrentActionMode = ActionMode.Crop;
             }
 
         }
@@ -570,12 +570,12 @@ namespace Editor
         private void SelectedPaintToolComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (SelectedPaintToolComboBox.SelectedIndex == 0)
-                AppState.SelectedTool = PaintTools.Pencil;
+                AppManager.SelectedTool = PaintTools.Pencil;
             else if (SelectedPaintToolComboBox.SelectedIndex == 1)
-                AppState.SelectedTool = PaintTools.Pen;
+                AppManager.SelectedTool = PaintTools.Pen;
         }
 
-        private void PaintToolThicknessComboBox_SelectedIndexChanged(object sender, EventArgs e) => AppState.ToolThickness = PaintToolThicknessComboBox.SelectedIndex + 1;
+        private void PaintToolThicknessComboBox_SelectedIndexChanged(object sender, EventArgs e) => AppManager.ToolThickness = PaintToolThicknessComboBox.SelectedIndex + 1;
 
         #endregion
 
@@ -585,9 +585,9 @@ namespace Editor
             WithOutlineToolStripMenuItem.BackColor = SystemColors.Control;
             WithoutOutlineToolStripMenuItem.BackColor = SystemColors.GradientActiveCaption;
             if (NoFillToolStripMenuItem.BackColor == SystemColors.GradientActiveCaption)
-                AppState.SelectedShapeDrawMode = ShapeDrawMode.NoOutlineAndFill;
+                AppManager.SelectedShapeDrawMode = ShapeDrawMode.NoOutlineAndFill;
             else
-                AppState.SelectedShapeDrawMode = ShapeDrawMode.OnlyFill;
+                AppManager.SelectedShapeDrawMode = ShapeDrawMode.OnlyFill;
         }
 
         private void WithOutlineToolStripMenuItem_Click(object sender, EventArgs e)
@@ -595,9 +595,9 @@ namespace Editor
             WithoutOutlineToolStripMenuItem.BackColor = SystemColors.Control;
             WithOutlineToolStripMenuItem.BackColor = SystemColors.GradientActiveCaption;
             if (NoFillToolStripMenuItem.BackColor == SystemColors.GradientActiveCaption)
-                AppState.SelectedShapeDrawMode = ShapeDrawMode.OnlyOutline;
+                AppManager.SelectedShapeDrawMode = ShapeDrawMode.OnlyOutline;
             else
-                AppState.SelectedShapeDrawMode = ShapeDrawMode.OutlineAndFill;
+                AppManager.SelectedShapeDrawMode = ShapeDrawMode.OutlineAndFill;
         }
 
         private void NoFillToolStripMenuItem_Click(object sender, EventArgs e)
@@ -606,9 +606,9 @@ namespace Editor
             LinearGradientFillToolStripMenuItem.BackColor = SystemColors.Control;
             NoFillToolStripMenuItem.BackColor = SystemColors.GradientActiveCaption;
             if (WithoutOutlineToolStripMenuItem.BackColor == SystemColors.GradientActiveCaption)
-                AppState.SelectedShapeDrawMode = ShapeDrawMode.NoOutlineAndFill;
+                AppManager.SelectedShapeDrawMode = ShapeDrawMode.NoOutlineAndFill;
             else
-                AppState.SelectedShapeDrawMode = ShapeDrawMode.OnlyOutline;
+                AppManager.SelectedShapeDrawMode = ShapeDrawMode.OnlyOutline;
         }
 
         private void SolidColorFillToolStripMenuItem_Click(object sender, EventArgs e)
@@ -617,10 +617,10 @@ namespace Editor
             LinearGradientFillToolStripMenuItem.BackColor = SystemColors.Control;
             SolidColorFillToolStripMenuItem.BackColor = SystemColors.GradientActiveCaption;
             if (WithoutOutlineToolStripMenuItem.BackColor == SystemColors.GradientActiveCaption)
-                AppState.SelectedShapeDrawMode = ShapeDrawMode.OnlyFill;
+                AppManager.SelectedShapeDrawMode = ShapeDrawMode.OnlyFill;
             else
-                AppState.SelectedShapeDrawMode = ShapeDrawMode.OutlineAndFill;
-            AppState.SelectedShapeFillMode = ShapeFillMode.Solid;
+                AppManager.SelectedShapeDrawMode = ShapeDrawMode.OutlineAndFill;
+            AppManager.SelectedShapeFillMode = ShapeFillMode.Solid;
         }
 
         private void LinearGradientFillToolStripMenuItem_Click(object sender, EventArgs e)
@@ -628,10 +628,10 @@ namespace Editor
             NoFillToolStripMenuItem.BackColor = SystemColors.Control;
             SolidColorFillToolStripMenuItem.BackColor = SystemColors.Control;
             if (WithoutOutlineToolStripMenuItem.BackColor == SystemColors.GradientActiveCaption)
-                AppState.SelectedShapeDrawMode = ShapeDrawMode.OnlyFill;
+                AppManager.SelectedShapeDrawMode = ShapeDrawMode.OnlyFill;
             else
-                AppState.SelectedShapeDrawMode = ShapeDrawMode.OutlineAndFill;
-            AppState.SelectedShapeFillMode = ShapeFillMode.LinearGradient;
+                AppManager.SelectedShapeDrawMode = ShapeDrawMode.OutlineAndFill;
+            AppManager.SelectedShapeFillMode = ShapeFillMode.LinearGradient;
         }
 
         private void VerticalGradToolStripMenuItem_Click(object sender, EventArgs e)
@@ -639,7 +639,7 @@ namespace Editor
             HorizontalGradToolStripMenuItem.BackColor = SystemColors.Control;
             ForwardDiagonalGradToolStripMenuItem.BackColor = SystemColors.Control;
             BackwardDiagonalGradToolStripMenuItem.BackColor = SystemColors.Control;
-            AppState.SelectedShapeFillLinearGradientMode = LinearGradientMode.Vertical;
+            AppManager.SelectedShapeFillLinearGradientMode = LinearGradientMode.Vertical;
             VerticalGradToolStripMenuItem.BackColor = SystemColors.GradientActiveCaption;
         }
 
@@ -648,7 +648,7 @@ namespace Editor
             VerticalGradToolStripMenuItem.BackColor = SystemColors.Control;
             ForwardDiagonalGradToolStripMenuItem.BackColor = SystemColors.Control;
             BackwardDiagonalGradToolStripMenuItem.BackColor = SystemColors.Control;
-            AppState.SelectedShapeFillLinearGradientMode = LinearGradientMode.Horizontal;
+            AppManager.SelectedShapeFillLinearGradientMode = LinearGradientMode.Horizontal;
             HorizontalGradToolStripMenuItem.BackColor = SystemColors.GradientActiveCaption;
         }
 
@@ -657,7 +657,7 @@ namespace Editor
             VerticalGradToolStripMenuItem.BackColor = SystemColors.Control;
             HorizontalGradToolStripMenuItem.BackColor = SystemColors.Control;
             BackwardDiagonalGradToolStripMenuItem.BackColor = SystemColors.Control;
-            AppState.SelectedShapeFillLinearGradientMode = LinearGradientMode.ForwardDiagonal;
+            AppManager.SelectedShapeFillLinearGradientMode = LinearGradientMode.ForwardDiagonal;
             ForwardDiagonalGradToolStripMenuItem.BackColor = SystemColors.GradientActiveCaption;
         }
 
@@ -666,7 +666,7 @@ namespace Editor
             VerticalGradToolStripMenuItem.BackColor = SystemColors.Control;
             HorizontalGradToolStripMenuItem.BackColor = SystemColors.Control;
             ForwardDiagonalGradToolStripMenuItem.BackColor = SystemColors.Control;
-            AppState.SelectedShapeFillLinearGradientMode = LinearGradientMode.BackwardDiagonal;
+            AppManager.SelectedShapeFillLinearGradientMode = LinearGradientMode.BackwardDiagonal;
             BackwardDiagonalGradToolStripMenuItem.BackColor = SystemColors.GradientActiveCaption;
         }
 
@@ -682,7 +682,7 @@ namespace Editor
         private void buttonPrimaryColorUpdate(object? sender, PaintEventArgs? e)
         {
             Graphics g = Graphics.FromImage(((Button)sender).Image);
-            g.FillRectangle(new SolidBrush(AppState.PrimaryColor), new Rectangle(3, 3, 17, 17));
+            g.FillRectangle(new SolidBrush(AppManager.PrimaryColor), new Rectangle(3, 3, 17, 17));
         }
 
         private void buttonSecondaryColor_Click(object sender, EventArgs e)
@@ -694,7 +694,7 @@ namespace Editor
         private void buttonSecondaryColorUpdate(object? sender, PaintEventArgs? e)
         {
             Graphics g = Graphics.FromImage(((Button)sender).Image);
-            g.FillRectangle(new SolidBrush(AppState.SecondaryColor), new Rectangle(3, 3, 17, 17));
+            g.FillRectangle(new SolidBrush(AppManager.SecondaryColor), new Rectangle(3, 3, 17, 17));
         }
 
         private void buttonChangeColors_Click(object sender, EventArgs e)
@@ -706,13 +706,13 @@ namespace Editor
             {
                 if (buttonPrimaryColor.BackColor == SystemColors.GradientActiveCaption)
                 {
-                    AppState.PrimaryColor = cd.Color;
+                    AppManager.PrimaryColor = cd.Color;
                     buttonPrimaryColor.Refresh();
                     buttonPrimaryColor.BackColor = SystemColors.GradientInactiveCaption;
                 }
                 else
                 {
-                    AppState.SecondaryColor = cd.Color;
+                    AppManager.SecondaryColor = cd.Color;
                     buttonSecondaryColor.Refresh();
                     buttonSecondaryColor.BackColor = SystemColors.GradientInactiveCaption;
                 }
@@ -725,9 +725,9 @@ namespace Editor
         private void BoldFontToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             if (BoldFontToolStripMenuItem.Checked)
-                AppState.FontForDrawingText = new Font(AppState.FontForDrawingText, AppState.FontForDrawingText.Style | FontStyle.Bold);
+                AppManager.FontForDrawingText = new Font(AppManager.FontForDrawingText, AppManager.FontForDrawingText.Style | FontStyle.Bold);
             else
-                AppState.FontForDrawingText = new Font(AppState.FontForDrawingText, AppState.FontForDrawingText.Style & (~FontStyle.Bold));
+                AppManager.FontForDrawingText = new Font(AppManager.FontForDrawingText, AppManager.FontForDrawingText.Style & (~FontStyle.Bold));
             if (TextDrawHelper.IsActive)
                 TextDrawHelper.ApplyFont();
         }
@@ -735,9 +735,9 @@ namespace Editor
         private void ItalicFontToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             if (ItalicFontToolStripMenuItem.Checked)
-                AppState.FontForDrawingText = new Font(AppState.FontForDrawingText, AppState.FontForDrawingText.Style | FontStyle.Italic);
+                AppManager.FontForDrawingText = new Font(AppManager.FontForDrawingText, AppManager.FontForDrawingText.Style | FontStyle.Italic);
             else
-                AppState.FontForDrawingText = new Font(AppState.FontForDrawingText, AppState.FontForDrawingText.Style & (~FontStyle.Italic));
+                AppManager.FontForDrawingText = new Font(AppManager.FontForDrawingText, AppManager.FontForDrawingText.Style & (~FontStyle.Italic));
             if (TextDrawHelper.IsActive)
                 TextDrawHelper.ApplyFont();
         }
@@ -745,9 +745,9 @@ namespace Editor
         private void UnderlinedTextToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             if (UnderlinedTextToolStripMenuItem.Checked)
-                AppState.FontForDrawingText = new Font(AppState.FontForDrawingText, AppState.FontForDrawingText.Style | FontStyle.Underline);
+                AppManager.FontForDrawingText = new Font(AppManager.FontForDrawingText, AppManager.FontForDrawingText.Style | FontStyle.Underline);
             else
-                AppState.FontForDrawingText = new Font(AppState.FontForDrawingText, AppState.FontForDrawingText.Style & (~FontStyle.Underline));
+                AppManager.FontForDrawingText = new Font(AppManager.FontForDrawingText, AppManager.FontForDrawingText.Style & (~FontStyle.Underline));
             if (TextDrawHelper.IsActive)
                 TextDrawHelper.ApplyFont();
         }
@@ -755,9 +755,9 @@ namespace Editor
         private void CrossedOutTextToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             if (CrossedOutTextToolStripMenuItem.Checked)
-                AppState.FontForDrawingText = new Font(AppState.FontForDrawingText, AppState.FontForDrawingText.Style | FontStyle.Strikeout);
+                AppManager.FontForDrawingText = new Font(AppManager.FontForDrawingText, AppManager.FontForDrawingText.Style | FontStyle.Strikeout);
             else
-                AppState.FontForDrawingText = new Font(AppState.FontForDrawingText, AppState.FontForDrawingText.Style & (~FontStyle.Strikeout));
+                AppManager.FontForDrawingText = new Font(AppManager.FontForDrawingText, AppManager.FontForDrawingText.Style & (~FontStyle.Strikeout));
             if (TextDrawHelper.IsActive)
                 TextDrawHelper.ApplyFont();
         }
@@ -765,7 +765,7 @@ namespace Editor
         private void buttonChangeFont_Click(object sender, EventArgs e)
         {
             using var fd = new FontDialog();
-            fd.Font = AppState.FontForDrawingText;
+            fd.Font = AppManager.FontForDrawingText;
             fd.FontMustExist = true;
             fd.MinSize = 1;
             fd.MaxSize = 100;
@@ -778,7 +778,7 @@ namespace Editor
 
             if (fd.ShowDialog() == DialogResult.OK)
             {
-                AppState.FontForDrawingText = fd.Font;
+                AppManager.FontForDrawingText = fd.Font;
                 labelSelectedFont.Text = "������� �����: " + fd.Font.Name;
                 labelFontSize.Text = "�����: " + fd.Font.Size.ToString();
 
@@ -814,7 +814,7 @@ namespace Editor
                 return;
             }
 
-            switch (AppState.CurrentActionMode)
+            switch (AppManager.CurrentActionMode)
             {
                 case ActionMode.ArbitraryDrawing:
                     UndoRedoHelper.Save(canvas);
@@ -871,7 +871,7 @@ namespace Editor
         {
             MouseTracker.RegisterMove(e);
 
-            switch (AppState.CurrentActionMode)
+            switch (AppManager.CurrentActionMode)
             {
                 case ActionMode.ArbitraryDrawing:
                     ArbitraryDrawingHelper.Activate(canvasGraphics, true);
@@ -901,7 +901,7 @@ namespace Editor
 
             MouseTracker.RegisterUp(e);
 
-            switch (AppState.CurrentActionMode)
+            switch (AppManager.CurrentActionMode)
             {
                 case ActionMode.Crop:
                     CropTool.Activate(canvasView, ref canvas, ref canvasGraphics);
@@ -936,7 +936,7 @@ namespace Editor
         {
             GraphicsState temp = e.Graphics.Save();
             e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            if (AppState.ZoomFactor >= 1)
+            if (AppManager.ZoomFactor >= 1)
                 e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
             else
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -945,17 +945,17 @@ namespace Editor
 
             e.Graphics.Restore(temp);
 
-            if (AppState.GridEnabled)
+            if (AppManager.GridEnabled)
             {
                 using Pen p = new Pen(Color.LightGray);
 
                 int cellSizeLength;
 
-                if (AppState.ZoomFactor == 8)
+                if (AppManager.ZoomFactor == 8)
                     cellSizeLength = 8;
-                else if (AppState.ZoomFactor == 4)
+                else if (AppManager.ZoomFactor == 4)
                     cellSizeLength = 4;
-                else if (AppState.ZoomFactor == 2)
+                else if (AppManager.ZoomFactor == 2)
                     cellSizeLength = 8;
                 else
                     cellSizeLength = 10;
@@ -969,7 +969,7 @@ namespace Editor
 
             if (ViewNeedsAnUpdate)
             {
-                switch (AppState.CurrentActionMode)
+                switch (AppManager.CurrentActionMode)
                 {
                     case ActionMode.DrawOrdinaryShape:
                         OrdinaryShapeDrawHelper.Activate(e.Graphics, false);
@@ -1327,11 +1327,11 @@ namespace Editor
 
             int step;
 
-            if (AppState.ZoomFactor == 8)
+            if (AppManager.ZoomFactor == 8)
                 step = 8;
-            else if (AppState.ZoomFactor == 4)
+            else if (AppManager.ZoomFactor == 4)
                 step = 8;
-            else if (AppState.ZoomFactor == 2)
+            else if (AppManager.ZoomFactor == 2)
                 step = 8;
             else
                 step = 10;
@@ -1341,7 +1341,7 @@ namespace Editor
                 if (i % 10 == 0)
                 {
                     e.Graphics.DrawLine(Pens.Black, x, 0, x, 15);
-                    e.Graphics.DrawString(((int)Math.Floor(x / AppState.ZoomFactor)).ToString(), f, Brushes.Black, new PointF(x - 2, 17));
+                    e.Graphics.DrawString(((int)Math.Floor(x / AppManager.ZoomFactor)).ToString(), f, Brushes.Black, new PointF(x - 2, 17));
                 }
                 else
                     e.Graphics.DrawLine(p, x, 5, x, 15);
@@ -1359,11 +1359,11 @@ namespace Editor
 
             int step;
 
-            if (AppState.ZoomFactor == 8)
+            if (AppManager.ZoomFactor == 8)
                 step = 8;
-            else if (AppState.ZoomFactor == 4)
+            else if (AppManager.ZoomFactor == 4)
                 step = 8;
-            else if (AppState.ZoomFactor == 2)
+            else if (AppManager.ZoomFactor == 2)
                 step = 8;
             else
                 step = 10;
@@ -1373,7 +1373,7 @@ namespace Editor
                 if (i % 10 == 0)
                 {
                     e.Graphics.DrawLine(Pens.Black, 0, y, 15, y);
-                    string temp = ((int)Math.Floor(y / AppState.ZoomFactor)).ToString();
+                    string temp = ((int)Math.Floor(y / AppManager.ZoomFactor)).ToString();
                     e.Graphics.RotateTransform(-90);
                     e.Graphics.TranslateTransform(17, y + TextRenderer.MeasureText(temp, f).Width, MatrixOrder.Append);
                     e.Graphics.DrawString(temp, f, Brushes.Black, new PointF(0, 0));

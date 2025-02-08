@@ -8,9 +8,11 @@ namespace Library.StaticClasses
 
         public static void Activate(Graphics graphics, bool mouseMove)
         {
-            Tool = (Pen)AppState.SelectedTool.Clone();
+            Tool = (Pen)AppManager.SelectedTool.Clone();
             SetThickness();
             DetermineColor();
+
+            var savedGraphicsState = graphics.Save();
 
             ConfigureGraphics(graphics);
 
@@ -19,27 +21,23 @@ namespace Library.StaticClasses
             else
                 graphics.DrawLine(Tool, MouseTracker.MouseDownPoint, new PointF(MouseTracker.MouseDownPoint.X + 0.75f, MouseTracker.MouseDownPoint.Y + 0.75f));
 
-            UnconfigureGraphics(graphics);
+            graphics.Restore(savedGraphicsState);
+
+            Tool.Dispose();
         }
 
-        private static void SetThickness() => Tool.Width = AppState.ToolThickness;
+        private static void SetThickness() => Tool.Width = AppManager.ToolThickness;
 
         private static void DetermineColor()
         {
-            if (MouseTracker.PressedButton == MouseButtons.Left) Tool.Color = AppState.PrimaryColor;
-            else if (MouseTracker.PressedButton == MouseButtons.Right) Tool.Color = AppState.SecondaryColor;
+            if (MouseTracker.PressedButton == MouseButtons.Left) Tool.Color = AppManager.PrimaryColor;
+            else if (MouseTracker.PressedButton == MouseButtons.Right) Tool.Color = AppManager.SecondaryColor;
         }
 
         private static void ConfigureGraphics(Graphics graphics)
         {
-            if (AppState.SelectedTool == PaintTools.Pen)
+            if (AppManager.SelectedTool == PaintTools.Pen)
                 graphics.SmoothingMode = SmoothingMode.AntiAlias;
-        }
-
-        private static void UnconfigureGraphics(Graphics graphics)
-        {
-            if (AppState.SelectedTool == PaintTools.Pen)
-                graphics.SmoothingMode = SmoothingMode.None;
         }
     }
 }

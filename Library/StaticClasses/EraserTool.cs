@@ -4,11 +4,8 @@ namespace Library.StaticClasses
 {
     public static class EraserTool
     {
-        private static Pen Eraser { get; }
-
-        static EraserTool()
-        {
-            Eraser = new Pen(Color.White, 1)
+        private static Pen Eraser { get; } =
+            new Pen(Color.White, 1)
             {
                 StartCap = LineCap.Round,
                 EndCap = LineCap.Round,
@@ -16,7 +13,6 @@ namespace Library.StaticClasses
                 DashCap = DashCap.Round,
                 DashStyle = DashStyle.Solid,
             };
-        }
 
         public static void Activate(Graphics graphics, bool mouseMove)
         {
@@ -27,6 +23,6 @@ namespace Library.StaticClasses
                 graphics.DrawLine(Eraser, MouseTracker.MouseDownPoint, new PointF(MouseTracker.MouseDownPoint.X + 0.75f, MouseTracker.MouseDownPoint.Y + 0.75f));
         }
 
-        private static void SetThickness() => Eraser.Width = AppState.ToolThickness;
+        private static void SetThickness() => Eraser.Width = AppManager.ToolThickness;
     }
 }

@@ -32,7 +32,7 @@ namespace Library.StaticClasses
                 canvasGraphics = Graphics.FromImage(canvas);
                 canvasView.Image = canvas;
                 UndoRedoHappened = true;
-                canvasView.Size = new Size((int)Math.Round(canvas.Width * AppState.ZoomFactor), (int)Math.Round(canvas.Height * AppState.ZoomFactor));
+                canvasView.Size = new Size((int)Math.Round(canvas.Width * AppManager.ZoomFactor), (int)Math.Round(canvas.Height * AppManager.ZoomFactor));
                 UndoRedoHappened = false;
                 FileHelper.LastVersionSaved = false;
             }
@@ -47,7 +47,7 @@ namespace Library.StaticClasses
                 canvasGraphics = Graphics.FromImage(canvas);
                 canvasView.Image = canvas;
                 UndoRedoHappened = true;
-                canvasView.Size = new Size((int)Math.Round(canvas.Width * AppState.ZoomFactor), (int)Math.Round(canvas.Height * AppState.ZoomFactor));
+                canvasView.Size = new Size((int)Math.Round(canvas.Width * AppManager.ZoomFactor), (int)Math.Round(canvas.Height * AppManager.ZoomFactor));
                 UndoRedoHappened = false;
                 FileHelper.LastVersionSaved = false;
             }

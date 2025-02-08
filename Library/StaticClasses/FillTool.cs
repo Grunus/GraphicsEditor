@@ -4,13 +4,15 @@
     {
         public static void Activate(Bitmap canvas)
         {
-            Point startPoint = new Point(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y);
+            Point startPoint = MouseTracker.MouseDownPoint;
+
             Color oldColor = canvas.GetPixel(startPoint.X, startPoint.Y);
             Color newColor = Color.Black;
+
             if (MouseTracker.PressedButton == MouseButtons.Left)
-                newColor = AppState.PrimaryColor;
+                newColor = AppManager.PrimaryColor;
             else if (MouseTracker.PressedButton == MouseButtons.Right)
-                newColor = AppState.SecondaryColor;
+                newColor = AppManager.SecondaryColor;
 
             if (oldColor.ToArgb() == newColor.ToArgb())
                 return;

@@ -3,7 +3,7 @@ using System.Drawing.Drawing2D;
 
 namespace Library.StaticClasses
 {
-    public static class AppState
+    public static class AppManager
     {
         public static Size DefaultCanvasSize { get; } = new Size(1000, 600);
 

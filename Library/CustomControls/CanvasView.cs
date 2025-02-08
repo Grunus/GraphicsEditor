@@ -1,8 +1,4 @@
-﻿using Library.StaticClasses;
-using System.Drawing.Drawing2D;
-using System.Runtime.CompilerServices;
-
-namespace Library.CustomControls
+﻿namespace Library.CustomControls
 {
     public class CanvasView : PictureBox
     {
@@ -120,6 +116,17 @@ namespace Library.CustomControls
 
                 if (!(pos.X - Left <= Width && pos.Y - Top <= Height))
                     Parent.Invalidate();
+            }
+        }
+
+        //If something's wrong with canvas - just delete this property
+        public new Image Image
+        {
+            get => base.Image;
+            set
+            {
+                base.Image?.Dispose();
+                base.Image = value;
             }
         }
     }

@@ -28,7 +28,7 @@ namespace Library.StaticClasses
 
         public static void Activate()
         {
-            Tool = (Pen)AppState.SelectedTool.Clone();
+            Tool = (Pen)AppManager.SelectedTool.Clone();
             SetThickness();
             DetermineColor();
         }
@@ -58,13 +58,16 @@ namespace Library.StaticClasses
                     temp = [CanvasDrawPath.PathPoints[0], CanvasDrawPath.PathPoints[1], CanvasDrawPath.PathPoints[3]];
                     CanvasDrawPath.Reset();
                     CanvasDrawPath.AddBezier(temp[0], temp[1], MouseTracker.MouseUpPoint, temp[2]);
-                    if (AppState.SelectedShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
+                    if (AppManager.SelectedShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
                         return;
-                    if (AppState.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
+                    if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
                     {
+                        var savedGraphicsState = graphics.Save();
                         ConfigureGraphics(graphics);
+
                         graphics.DrawPath(Tool, CanvasDrawPath);
-                        UnconfigureGraphics(graphics);
+
+                        graphics.Restore(savedGraphicsState);
                     }
                     CurveDrawNotStarted = true;
                     break;
@@ -73,17 +76,20 @@ namespace Library.StaticClasses
 
         public static void DrawCurrentCurveOnCanvas(Graphics graphics)
         {
-            if (AppState.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
+            if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
             {
+                var savedGraphicsState = graphics.Save();
+
                 ConfigureGraphics(graphics);
                 graphics.DrawPath(Tool, CanvasDrawPath);
-                UnconfigureGraphics(graphics);
+
+                graphics.Restore(savedGraphicsState);
             }
         }
 
         public static void CreateTemporaryCurve(Graphics graphics)
         {
-            if (AppState.SelectedShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
+            if (AppManager.SelectedShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
                 return;
 
             switch (CurrentIteration)
@@ -91,26 +97,26 @@ namespace Library.StaticClasses
                 case 1:
                     CanvasViewDrawPath = new GraphicsPath();
                     CanvasViewDrawPath.AddBezier(
-                                new PointF(MouseTracker.MouseDownPoint.X * AppState.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppState.ZoomFactor),
-                                new PointF((MouseTracker.MouseDownPoint.X + (MouseTracker.MouseMovePoint.X - MouseTracker.MouseDownPoint.X) / 3) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseMovePoint.Y - MouseTracker.MouseDownPoint.Y) / 3) * AppState.ZoomFactor),
-                                new PointF((MouseTracker.MouseDownPoint.X + (MouseTracker.MouseMovePoint.X - MouseTracker.MouseDownPoint.X) / 3 * 2) * AppState.ZoomFactor, (MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseMovePoint.Y - MouseTracker.MouseDownPoint.Y) / 3 * 2) * AppState.ZoomFactor),
-                                new PointF(MouseTracker.MouseMovePoint.X * AppState.ZoomFactor, MouseTracker.MouseMovePoint.Y * AppState.ZoomFactor));
+                                new PointF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor),
+                                new PointF((MouseTracker.MouseDownPoint.X + (MouseTracker.MouseMovePoint.X - MouseTracker.MouseDownPoint.X) / 3) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseMovePoint.Y - MouseTracker.MouseDownPoint.Y) / 3) * AppManager.ZoomFactor),
+                                new PointF((MouseTracker.MouseDownPoint.X + (MouseTracker.MouseMovePoint.X - MouseTracker.MouseDownPoint.X) / 3 * 2) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseMovePoint.Y - MouseTracker.MouseDownPoint.Y) / 3 * 2) * AppManager.ZoomFactor),
+                                new PointF(MouseTracker.MouseMovePoint.X * AppManager.ZoomFactor, MouseTracker.MouseMovePoint.Y * AppManager.ZoomFactor));
                     break;
                 case 2:
                     CanvasViewDrawPath.Reset();
                     CanvasViewDrawPath.AddBezier(
-                                new PointF(CanvasDrawPath.PathPoints[0].X * AppState.ZoomFactor, CanvasDrawPath.PathPoints[0].Y * AppState.ZoomFactor),
-                                new PointF(MouseTracker.MouseMovePoint.X * AppState.ZoomFactor, MouseTracker.MouseMovePoint.Y * AppState.ZoomFactor),
-                                new PointF(CanvasDrawPath.PathPoints[2].X * AppState.ZoomFactor, CanvasDrawPath.PathPoints[2].Y * AppState.ZoomFactor),
-                                new PointF(CanvasDrawPath.PathPoints[3].X * AppState.ZoomFactor, CanvasDrawPath.PathPoints[3].Y * AppState.ZoomFactor));
+                                new PointF(CanvasDrawPath.PathPoints[0].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[0].Y * AppManager.ZoomFactor),
+                                new PointF(MouseTracker.MouseMovePoint.X * AppManager.ZoomFactor, MouseTracker.MouseMovePoint.Y * AppManager.ZoomFactor),
+                                new PointF(CanvasDrawPath.PathPoints[2].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[2].Y * AppManager.ZoomFactor),
+                                new PointF(CanvasDrawPath.PathPoints[3].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[3].Y * AppManager.ZoomFactor));
                     break;
                 case 3:
                     CanvasViewDrawPath.Reset();
                     CanvasViewDrawPath.AddBezier(
-                                new PointF(CanvasDrawPath.PathPoints[0].X * AppState.ZoomFactor, CanvasDrawPath.PathPoints[0].Y * AppState.ZoomFactor),
-                                new PointF(CanvasDrawPath.PathPoints[1].X * AppState.ZoomFactor, CanvasDrawPath.PathPoints[1].Y * AppState.ZoomFactor),
-                                new PointF(MouseTracker.MouseMovePoint.X * AppState.ZoomFactor, MouseTracker.MouseMovePoint.Y * AppState.ZoomFactor),
-                                new PointF(CanvasDrawPath.PathPoints[3].X * AppState.ZoomFactor, CanvasDrawPath.PathPoints[3].Y * AppState.ZoomFactor));
+                                new PointF(CanvasDrawPath.PathPoints[0].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[0].Y * AppManager.ZoomFactor),
+                                new PointF(CanvasDrawPath.PathPoints[1].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[1].Y * AppManager.ZoomFactor),
+                                new PointF(MouseTracker.MouseMovePoint.X * AppManager.ZoomFactor, MouseTracker.MouseMovePoint.Y * AppManager.ZoomFactor),
+                                new PointF(CanvasDrawPath.PathPoints[3].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[3].Y * AppManager.ZoomFactor));
                     break;
             }
 
@@ -119,36 +125,31 @@ namespace Library.StaticClasses
 
         public static void DrawCurrentCurveOnCanvasView(Graphics graphics)
         {
-            if (AppState.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
+            if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
             {
+                var savedGraphicsState = graphics.Save();
                 ConfigureGraphics(graphics);
-                Tool.Width *= AppState.ZoomFactor;
+                Tool.Width *= AppManager.ZoomFactor;
                 graphics.DrawPath(Tool, CanvasViewDrawPath);
-                Tool.Width /= AppState.ZoomFactor;
-                UnconfigureGraphics(graphics);
+                Tool.Width /= AppManager.ZoomFactor;
+                graphics.Restore(savedGraphicsState);
             }
         }
 
-        private static void SetThickness() => Tool.Width = AppState.ToolThickness;
+        private static void SetThickness() => Tool.Width = AppManager.ToolThickness;
 
         private static void DetermineColor()
         {
             if (MouseTracker.PressedButton == MouseButtons.Left)
-                Tool.Color = AppState.PrimaryColor;
+                Tool.Color = AppManager.PrimaryColor;
             else if (MouseTracker.PressedButton == MouseButtons.Right)
-                Tool.Color = AppState.SecondaryColor;
+                Tool.Color = AppManager.SecondaryColor;
         }
 
         private static void ConfigureGraphics(Graphics graphics)
         {
-            if (AppState.SelectedTool == PaintTools.Pen)
+            if (AppManager.SelectedTool == PaintTools.Pen)
                 graphics.SmoothingMode = SmoothingMode.AntiAlias;
-        }
-
-        private static void UnconfigureGraphics(Graphics graphics)
-        {
-            if (AppState.SelectedTool == PaintTools.Pen)
-                graphics.SmoothingMode = SmoothingMode.None;
         }
     }
 }

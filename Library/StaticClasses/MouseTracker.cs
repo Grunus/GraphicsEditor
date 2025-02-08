@@ -10,17 +10,17 @@
 
         public static Point MouseUpPoint { get; set; }
 
-        public static int HorizontalDistance { get; set; }
+        public static int HorizontalDistance => MouseMovePoint.X - MouseDownPoint.X;
 
-        public static int VerticalDistance { get; set; }
+        public static int VerticalDistance => MouseMovePoint.Y - MouseDownPoint.Y;
 
         public static MouseButtons PressedButton { get; set; }
 
         public static void RegisterDown(MouseEventArgs e)
         {
-            MouseDownPoint = new Point((int)Math.Floor(e.Location.X / AppState.ZoomFactor), (int)Math.Floor(e.Location.Y / AppState.ZoomFactor));
+            MouseDownPoint = new Point((int)Math.Floor(e.Location.X / AppManager.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.ZoomFactor));
 
-            MouseMovePoint = new Point((int)Math.Floor(e.Location.X / AppState.ZoomFactor), (int)Math.Floor(e.Location.Y / AppState.ZoomFactor));
+            MouseMovePoint = new Point((int)Math.Floor(e.Location.X / AppManager.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.ZoomFactor));
 
             PressedButton = e.Button;
         }
@@ -29,22 +29,12 @@
         {
             PrevMouseMovePoint = MouseMovePoint;
 
-            MouseMovePoint = new Point((int)Math.Floor(e.Location.X / AppState.ZoomFactor), (int)Math.Floor(e.Location.Y / AppState.ZoomFactor));
-
-            CalculateDistances();
+            MouseMovePoint = new Point((int)Math.Floor(e.Location.X / AppManager.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.ZoomFactor));
         }
 
         public static void RegisterUp(MouseEventArgs e)
         {
-            MouseUpPoint = new Point((int)Math.Floor(e.Location.X / AppState.ZoomFactor), (int)Math.Floor(e.Location.Y / AppState.ZoomFactor));
-
-            CalculateDistances();
-        }
-
-        private static void CalculateDistances()
-        {
-            HorizontalDistance = MouseMovePoint.X - MouseDownPoint.X;
-            VerticalDistance = MouseMovePoint.Y - MouseDownPoint.Y;
+            MouseUpPoint = new Point((int)Math.Floor(e.Location.X / AppManager.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.ZoomFactor));
         }
     }
 }

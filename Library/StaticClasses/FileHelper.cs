@@ -22,11 +22,11 @@ namespace Library.StaticClasses
                 else if (dr == DialogResult.Cancel)
                     return;
             }  
-            canvas = new Bitmap(AppState.DefaultCanvasSize.Width, AppState.DefaultCanvasSize.Height);
+            canvas = new Bitmap(AppManager.DefaultCanvasSize.Width, AppManager.DefaultCanvasSize.Height);
             canvasGraphics = Graphics.FromImage(canvas);
             canvasGraphics.Clear(Color.White);
             Target.Image = canvas;
-            AppState.ZoomFactor = 1.0f;
+            AppManager.ZoomFactor = 1.0f;
             ZoomHelper.Activate(Target);
             CurrentFilePath = string.Empty;
             LastVersionSaved = true;
@@ -57,7 +57,7 @@ namespace Library.StaticClasses
                 canvas = new Bitmap(ofd.FileName);
                 canvasGraphics = Graphics.FromImage(canvas);
                 Target.Image = canvas;
-                AppState.ZoomFactor = 1.0f;
+                AppManager.ZoomFactor = 1.0f;
                 ZoomHelper.Activate(Target);
                 CurrentFilePath = ofd.FileName;
                 LastVersionSaved = true;

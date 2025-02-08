@@ -1,7 +1,4 @@
-﻿using Library.StaticClasses;
-using System.Drawing.Drawing2D;
-
-namespace Library.CustomControls
+﻿namespace Library.CustomControls
 {
     public class SelectArea : PictureBox
     {

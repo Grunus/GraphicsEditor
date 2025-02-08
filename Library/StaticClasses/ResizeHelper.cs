@@ -10,7 +10,7 @@ namespace Library.StaticClasses
         public static void Activate(CanvasView Target, ref Bitmap canvas, ref Graphics canvasGraphics)
         {
             using Bitmap temp = new Bitmap(canvas);
-            canvas = new Bitmap((int)Math.Round(Target.Width / AppState.ZoomFactor), (int)Math.Round(Target.Height / AppState.ZoomFactor));
+            canvas = new Bitmap((int)Math.Round(Target.Width / AppManager.ZoomFactor), (int)Math.Round(Target.Height / AppManager.ZoomFactor));
             canvasGraphics = Graphics.FromImage(canvas);
             canvasGraphics.Clear(Color.White);
             for (int i = 0; i < canvas.Width && i < temp.Width; i++)
@@ -36,7 +36,7 @@ namespace Library.StaticClasses
             canvasGraphics.DrawImage(temp, 0, 0, canvas.Width, canvas.Height);
             canvasGraphics.InterpolationMode = InterpolationMode.Default;
             Target.Image = canvas;
-            Target.Size = new Size((int)Math.Round(newSize.Width * AppState.ZoomFactor), (int)Math.Round(newSize.Height * AppState.ZoomFactor));
+            Target.Size = new Size((int)Math.Round(newSize.Width * AppManager.ZoomFactor), (int)Math.Round(newSize.Height * AppManager.ZoomFactor));
         }
     }
 }
