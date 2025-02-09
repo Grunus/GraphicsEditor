@@ -1,4 +1,6 @@
-﻿namespace Library.CustomControls
+﻿using Library.Enums;
+
+namespace Library.CustomControls
 {
     public class SelectArea : PictureBox
     {
@@ -10,21 +12,7 @@
 
         public bool IsMoving { get; set; } = false;
 
-        private bool IsDraggingTopSide { get; set; } = false;
-
-        private bool IsDraggingRightSide { get; set; } = false;
-
-        private bool IsDraggingBottomSide { get; set; } = false;
-
-        private bool IsDraggingLeftSide { get; set; } = false;
-
-        private bool IsDraggingTopRightCorner { get; set; } = false;
-
-        private bool IsDraggingBottomRightCorner { get; set; } = false;
-
-        private bool IsDraggingBottomLeftCorner { get; set; } = false;
-
-        private bool IsDraggingTopLeftCorner { get; set; } = false;
+        private DragHandle DragHandle { get; set; } = DragHandle.None;
 
         public SelectArea() : base()
         {
@@ -37,42 +25,42 @@
             if (e.Location.X <= grab && e.Location.Y <= grab)
             {
                 IsResizing = true;
-                IsDraggingTopLeftCorner = true;
+                DragHandle = DragHandle.TopLeftCorner;
             }
             else if (e.Location.X > grab && e.Location.X < Width - grab && e.Location.Y <= grab)
             {
                 IsResizing = true;
-                IsDraggingTopSide = true;
+                DragHandle = DragHandle.TopSide;
             }
             else if (e.Location.X >= Width - grab && e.Location.Y <= grab)
             {
                 IsResizing = true;
-                IsDraggingTopRightCorner = true;
+                DragHandle = DragHandle.TopRightCorner;
             }
             else if (e.Location.X >= Width - grab && e.Location.Y > grab && e.Location.Y < Height - grab)
             {
                 IsResizing = true;
-                IsDraggingRightSide = true;
+                DragHandle = DragHandle.RightSide;
             }
             else if (e.Location.X >= Width - grab && e.Location.Y >= Height - grab)
             {
                 IsResizing = true;
-                IsDraggingBottomRightCorner = true;
+                DragHandle = DragHandle.BottomRightCorner;
             }
             else if (e.Location.X > grab && e.Location.X < Width - grab && e.Location.Y >= Height - grab)
             {
                 IsResizing = true;
-                IsDraggingBottomSide = true;
+                DragHandle = DragHandle.BottomSide;
             }
             else if (e.Location.X <= grab && e.Location.Y >= Height - grab)
             {
                 IsResizing = true;
-                IsDraggingBottomLeftCorner = true;
+                DragHandle = DragHandle.BottomLeftCorner;
             }
             else if (e.Location.X <= grab && e.Location.Y > grab && e.Location.Y < Height - grab)
             {
                 IsResizing = true;
-                IsDraggingLeftSide = true;
+                DragHandle = DragHandle.LeftSide;
             }
             else
             {
@@ -108,46 +96,46 @@
             }
             else if (!IsMoving)
             {
-                if (IsDraggingTopSide)
+                if (DragHandle == DragHandle.TopSide)
                 {
                     Size = new Size(Width, Height - e.Location.Y);
                     Top += e.Location.Y;
                     Cursor.Current = Cursors.SizeNS;
                 }
-                else if (IsDraggingRightSide)
+                else if (DragHandle == DragHandle.RightSide)
                 {
                     Size = new Size(e.Location.X, Height);
                     Cursor.Current = Cursors.SizeWE;
                 }
-                else if (IsDraggingBottomSide)
+                else if (DragHandle == DragHandle.BottomSide)
                 {
                     Size = new Size(Width, e.Location.Y);
                     Cursor.Current = Cursors.SizeNS;
                 }
-                else if (IsDraggingLeftSide)
+                else if (DragHandle == DragHandle.LeftSide)
                 {
                     Size = new Size(Width - e.Location.X, Height);
                     Left += e.Location.X;
                     Cursor.Current = Cursors.SizeWE;
                 }
-                else if (IsDraggingTopRightCorner)
+                else if (DragHandle == DragHandle.TopRightCorner)
                 {
                     Size = new Size(e.Location.X, Height - e.Location.Y);
                     Top += e.Location.Y;
                     Cursor.Current = Cursors.SizeNESW;
                 }
-                else if (IsDraggingBottomRightCorner)
+                else if (DragHandle == DragHandle.BottomRightCorner)
                 {
                     Size = new Size(e.Location.X, e.Location.Y);
                     Cursor.Current = Cursors.SizeNWSE;
                 }
-                else if (IsDraggingBottomLeftCorner)
+                else if (DragHandle == DragHandle.BottomLeftCorner)
                 {
                     Size = new Size(Width - e.Location.X, e.Location.Y);
                     Left += e.Location.X;
                     Cursor.Current = Cursors.SizeNESW;
                 }
-                else if (IsDraggingTopLeftCorner)
+                else if (DragHandle == DragHandle.TopLeftCorner)
                 {
                     Size = new Size(Width - e.Location.X, Height - e.Location.Y);
                     Top += e.Location.Y;
@@ -169,14 +157,7 @@
             base.OnMouseUp(e);
             IsResizing = false;
             IsMoving = false;
-            IsDraggingTopSide = false;
-            IsDraggingRightSide = false;
-            IsDraggingBottomSide = false;
-            IsDraggingLeftSide = false;
-            IsDraggingTopRightCorner = false;
-            IsDraggingBottomRightCorner = false;
-            IsDraggingBottomLeftCorner = false;
-            IsDraggingTopLeftCorner = false;
+            DragHandle = DragHandle.None;
         }
 
         protected override void OnPaint(PaintEventArgs e)
