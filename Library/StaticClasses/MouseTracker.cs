@@ -18,9 +18,9 @@
 
         public static void RegisterDown(MouseEventArgs e)
         {
-            MouseDownPoint = new Point((int)Math.Floor(e.Location.X / AppManager.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.ZoomFactor));
+            MouseDownPoint = new Point((int)Math.Floor(e.Location.X / AppManager.State.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.State.ZoomFactor));
 
-            MouseMovePoint = new Point((int)Math.Floor(e.Location.X / AppManager.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.ZoomFactor));
+            MouseMovePoint = new Point((int)Math.Floor(e.Location.X / AppManager.State.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.State.ZoomFactor));
 
             PressedButton = e.Button;
         }
@@ -29,12 +29,12 @@
         {
             PrevMouseMovePoint = MouseMovePoint;
 
-            MouseMovePoint = new Point((int)Math.Floor(e.Location.X / AppManager.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.ZoomFactor));
+            MouseMovePoint = new Point((int)Math.Floor(e.Location.X / AppManager.State.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.State.ZoomFactor));
         }
 
         public static void RegisterUp(MouseEventArgs e)
         {
-            MouseUpPoint = new Point((int)Math.Floor(e.Location.X / AppManager.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.ZoomFactor));
+            MouseUpPoint = new Point((int)Math.Floor(e.Location.X / AppManager.State.ZoomFactor), (int)Math.Floor(e.Location.Y / AppManager.State.ZoomFactor));
         }
     }
 }

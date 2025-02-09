@@ -15,10 +15,10 @@ namespace Library.StaticClasses
         {
             IsActive = true;
             TextArea = new TextArea();
-            TextArea.Width = (int)Math.Round(100 * AppManager.ZoomFactor);
-            TextArea.Font = new Font(AppManager.FontForDrawingText.FontFamily, AppManager.FontForDrawingText.Size * AppManager.ZoomFactor, AppManager.FontForDrawingText.Style);
-            TextArea.Location = new Point((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor));
-            PrevZoomFactor = AppManager.ZoomFactor;
+            TextArea.Width = (int)Math.Round(100 * AppManager.State.ZoomFactor);
+            TextArea.Font = new Font(AppManager.State.FontForDrawingText.FontFamily, AppManager.State.FontForDrawingText.Size * AppManager.State.ZoomFactor, AppManager.State.FontForDrawingText.Style);
+            TextArea.Location = new Point((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor));
+            PrevZoomFactor = AppManager.State.ZoomFactor;
             Target.Controls.Add(TextArea);
             TextArea.Focus();
         }
@@ -27,8 +27,8 @@ namespace Library.StaticClasses
         {
             Graphics g = Graphics.FromImage(canvas);
             g.TextRenderingHint = TextRenderingHint.AntiAlias;
-            Font temp = new Font(TextArea.Font.FontFamily, AppManager.FontForDrawingText.Size, TextArea.Font.Style);
-            g.DrawString(TextArea.Text, temp, new SolidBrush(AppManager.PrimaryColor), new RectangleF(TextArea.Location.X / AppManager.ZoomFactor, TextArea.Location.Y / AppManager.ZoomFactor, TextArea.Width / AppManager.ZoomFactor, TextArea.Height / AppManager.ZoomFactor));
+            Font temp = new Font(TextArea.Font.FontFamily, AppManager.State.FontForDrawingText.Size, TextArea.Font.Style);
+            g.DrawString(TextArea.Text, temp, new SolidBrush(AppManager.GetPrimaryColor()), new RectangleF(TextArea.Location.X / AppManager.State.ZoomFactor, TextArea.Location.Y / AppManager.State.ZoomFactor, TextArea.Width / AppManager.State.ZoomFactor, TextArea.Height / AppManager.State.ZoomFactor));
             Target.Controls.Remove(TextArea);
             TextArea.Dispose();
         }
@@ -41,12 +41,12 @@ namespace Library.StaticClasses
 
         public static void AdjustTextArea()
         {
-            TextArea.Size = new Size((int)Math.Round(TextArea.Width * AppManager.ZoomFactor / PrevZoomFactor), (int)Math.Round(TextArea.Height * AppManager.ZoomFactor / PrevZoomFactor));
-            TextArea.Location = new Point((int)Math.Round(TextArea.Location.X * AppManager.ZoomFactor / PrevZoomFactor), (int)Math.Round(TextArea.Location.Y * AppManager.ZoomFactor / PrevZoomFactor));
-            TextArea.Font = new Font(TextArea.Font.FontFamily, TextArea.Font.Size * AppManager.ZoomFactor / PrevZoomFactor, TextArea.Font.Style);
-            PrevZoomFactor = AppManager.ZoomFactor;
+            TextArea.Size = new Size((int)Math.Round(TextArea.Width * AppManager.State.ZoomFactor / PrevZoomFactor), (int)Math.Round(TextArea.Height * AppManager.State.ZoomFactor / PrevZoomFactor));
+            TextArea.Location = new Point((int)Math.Round(TextArea.Location.X * AppManager.State.ZoomFactor / PrevZoomFactor), (int)Math.Round(TextArea.Location.Y * AppManager.State.ZoomFactor / PrevZoomFactor));
+            TextArea.Font = new Font(TextArea.Font.FontFamily, TextArea.Font.Size * AppManager.State.ZoomFactor / PrevZoomFactor, TextArea.Font.Style);
+            PrevZoomFactor = AppManager.State.ZoomFactor;
         }
 
-        public static void ApplyFont() => TextArea.Font = new Font(AppManager.FontForDrawingText.FontFamily, AppManager.FontForDrawingText.Size * AppManager.ZoomFactor, AppManager.FontForDrawingText.Style);
+        public static void ApplyFont() => TextArea.Font = new Font(AppManager.State.FontForDrawingText.FontFamily, AppManager.State.FontForDrawingText.Size * AppManager.State.ZoomFactor, AppManager.State.FontForDrawingText.Style);
     }
 }

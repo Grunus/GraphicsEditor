@@ -1,4 +1,5 @@
 ﻿using Library.Enums;
+using Library.Miscellaneous;
 using System.Drawing.Drawing2D;
 
 namespace Library.StaticClasses
@@ -7,122 +8,99 @@ namespace Library.StaticClasses
     {
         private static Pen Tool { get; set; }
 
-        private static SolidBrush SolidFillBrush { get; set; } = new SolidBrush(Color.Black);
-
-        private static LinearGradientBrush LinearGradientFillBrush { get; set; }
-
-        private static GraphicsPath DrawPath { get; set; }
+        private static GraphicsPath PolygonPath { get; set; }
 
         public static bool PolygonDrawNotStarted { get; set; } = true;
 
         public static void Activate()
         {
-            Tool = (Pen)AppManager.SelectedTool.Clone();
-            SetThickness();
-            DetermineColor();
+            Tool = AppManager.GetSelectedTool().With(t => t.Color = AppManager.GetPrimaryColor());
         }
 
-        public static void DrawOnCanvas(Bitmap canvas, Graphics graphics)
+        public static void DrawTruePolygon(Bitmap canvas, Graphics graphics)
         {
             if (PolygonDrawNotStarted)
             {
-                DrawPath = new GraphicsPath();
-                DrawPath.AddLine(
+                PolygonPath = new GraphicsPath();
+                PolygonPath.AddLine(
                             MouseTracker.MouseDownPoint,
                             MouseTracker.MouseUpPoint);
                 PolygonDrawNotStarted = false;
             }
             else
             {
-                if (Math.Abs(MouseTracker.MouseUpPoint.X - DrawPath.PathPoints[0].X) <= 10 && Math.Abs(MouseTracker.MouseUpPoint.Y - DrawPath.PathPoints[0].Y) <= 10)
+                if (Math.Abs(MouseTracker.MouseUpPoint.X - PolygonPath.PathPoints[0].X) <= 10 && Math.Abs(MouseTracker.MouseUpPoint.Y - PolygonPath.PathPoints[0].Y) <= 10)
                 {
-                    DrawPath.CloseFigure();
+                    PolygonPath.CloseFigure();
                     PolygonDrawNotStarted = true;
                 }
                 else
-                    DrawPath.AddLine(
-                            DrawPath.PathPoints[DrawPath.PointCount - 1],
+                    PolygonPath.AddLine(
+                            PolygonPath.PathPoints[PolygonPath.PointCount - 1],
                             MouseTracker.MouseUpPoint);
             }
 
-            if (AppManager.SelectedShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
+            if (AppManager.State.ShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
                 return;
 
-            if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyOutline)
+            if (AppManager.State.ShapeDrawMode != ShapeDrawMode.OnlyOutline)
             {
-                if (AppManager.SelectedShapeFillMode == ShapeFillMode.Solid)
-                    graphics.FillPath(SolidFillBrush, DrawPath);
-                else if (AppManager.SelectedShapeFillMode == ShapeFillMode.LinearGradient)
+                Brush fillTool;
+
+                if (AppManager.State.ShapeFillMode == ShapeFillMode.Solid)
+                    fillTool = new SolidBrush(AppManager.GetSecondaryColor());
+                else
                 {
-                    LinearGradientFillBrush = new LinearGradientBrush(new RectangleF(0, 0, canvas.Width, canvas.Height), SolidFillBrush.Color, Color.FromArgb(0, SolidFillBrush.Color), AppManager.SelectedShapeFillLinearGradientMode);
-                    graphics.FillPath(LinearGradientFillBrush, DrawPath);
+                    fillTool = new LinearGradientBrush(
+                        new RectangleF(0, 0, canvas.Width, canvas.Height),
+                        AppManager.GetSecondaryColor(), 
+                        Color.FromArgb(0, AppManager.GetSecondaryColor()), 
+                        AppManager.State.ShapeFillLinearGradientMode);
+                    
                 }
+
+                graphics.FillPath(fillTool, PolygonPath);
+                fillTool.Dispose();
             }
 
-            if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
+            if (AppManager.State.ShapeDrawMode != ShapeDrawMode.OnlyFill)
             {
-                ConfigureGraphics(graphics);
-                graphics.DrawPath(Tool, DrawPath);
-                UnconfigureGraphics(graphics);
+                var savedGraphicsState = graphics.Save();
+                AppManager.ConfigureGraphics(graphics);
+                graphics.DrawPath(Tool, PolygonPath);
+                graphics.Restore(savedGraphicsState);
             }
         }
 
-        public static void DrawOnCanvasView(Graphics graphics)
+        public static void DrawTemporaryPolygon(Graphics graphics)
         {
-            if (AppManager.SelectedShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
+            if (AppManager.State.ShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
                 return;
 
-            if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
+            if (AppManager.State.ShapeDrawMode != ShapeDrawMode.OnlyFill)
             {
-                ConfigureGraphics(graphics);
-                Tool.Width *= AppManager.ZoomFactor;
+                var savedGraphicsState = graphics.Save();
+                AppManager.ConfigureGraphics(graphics);
+                Tool.Width *= AppManager.State.ZoomFactor;
                 if (PolygonDrawNotStarted)
                 {
                     graphics.DrawLine(
                                 Tool,
-                                MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor,
-                                MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor,
-                                MouseTracker.MouseMovePoint.X * AppManager.ZoomFactor,
-                                MouseTracker.MouseMovePoint.Y * AppManager.ZoomFactor);
+                                MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor,
+                                MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor,
+                                MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor,
+                                MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor);
                 }
                 else
                     graphics.DrawLine(
                                 Tool,
-                                DrawPath.PathPoints[DrawPath.PointCount - 1].X * AppManager.ZoomFactor,
-                                DrawPath.PathPoints[DrawPath.PointCount - 1].Y * AppManager.ZoomFactor,
-                                MouseTracker.MouseMovePoint.X * AppManager.ZoomFactor,
-                                MouseTracker.MouseMovePoint.Y * AppManager.ZoomFactor);
-                Tool.Width /= AppManager.ZoomFactor;
-                UnconfigureGraphics(graphics);
+                                PolygonPath.PathPoints[PolygonPath.PointCount - 1].X * AppManager.State.ZoomFactor,
+                                PolygonPath.PathPoints[PolygonPath.PointCount - 1].Y * AppManager.State.ZoomFactor,
+                                MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor,
+                                MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor);
+                Tool.Width /= AppManager.State.ZoomFactor;
+                graphics.Restore(savedGraphicsState);
             }
-        }
-
-        private static void SetThickness() => Tool.Width = AppManager.ToolThickness;
-
-        private static void DetermineColor()
-        {
-            if (MouseTracker.PressedButton == MouseButtons.Left)
-            {
-                Tool.Color = AppManager.PrimaryColor;
-                SolidFillBrush.Color = AppManager.SecondaryColor;
-            }
-            else if (MouseTracker.PressedButton == MouseButtons.Right)
-            {
-                Tool.Color = AppManager.SecondaryColor;
-                SolidFillBrush.Color = AppManager.PrimaryColor;
-            }
-        }
-
-        private static void ConfigureGraphics(Graphics graphics)
-        {
-            if (AppManager.SelectedTool == PaintTools.Pen)
-                graphics.SmoothingMode = SmoothingMode.AntiAlias;
-        }
-
-        private static void UnconfigureGraphics(Graphics graphics)
-        {
-            if (AppManager.SelectedTool == PaintTools.Pen)
-                graphics.SmoothingMode = SmoothingMode.None;
         }
     }
 }

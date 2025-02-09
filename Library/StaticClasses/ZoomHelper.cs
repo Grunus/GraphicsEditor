@@ -9,7 +9,7 @@ namespace Library.StaticClasses
         public static void Activate(CanvasView Target)
         {
             ZoomHappened = true;
-            Target.Size = new Size((int)Math.Round(Target.Image.Width * AppManager.ZoomFactor), (int)Math.Round(Target.Image.Height * AppManager.ZoomFactor));
+            Target.Size = new Size((int)Math.Round(Target.Image.Width * AppManager.State.ZoomFactor), (int)Math.Round(Target.Image.Height * AppManager.State.ZoomFactor));
         }
     }
 }

@@ -1,34 +1,65 @@
 ﻿using Library.Enums;
+using Library.Miscellaneous;
 using System.Drawing.Drawing2D;
 
 namespace Library.StaticClasses
 {
     public static class AppManager
     {
-        public static Size DefaultCanvasSize { get; } = new Size(1000, 600);
+        static AppManager()
+        {
+            Pen toolBase = new Pen(Color.Black, 1)
+            {
+                StartCap = LineCap.Round,
+                EndCap = LineCap.Round,
+                LineJoin = LineJoin.Round,
+                DashCap = DashCap.Round,
+                DashStyle = DashStyle.Solid,
+            };
+            PaintTools.Add(PaintTool.Eraser, ((Pen)toolBase.Clone()).With(p => p.Color = Color.White));
+            PaintTools.Add(PaintTool.Pen, toolBase);
+            PaintTools.Add(PaintTool.Pencil, toolBase); 
+        }
 
-        public static bool GridEnabled { get; set; } = false;
+        public static AppState State { get; } = new AppState();
 
-        public static ActionMode CurrentActionMode { get; set; } = ActionMode.ArbitraryDrawing;
+        private static Dictionary<PaintTool, Pen> PaintTools { get; } = [];
 
-        public static float ZoomFactor { get; set; } = 1.0f;
+        public static Color GetPrimaryColor()
+        {
+            if (MouseTracker.PressedButton == MouseButtons.Left)
+                return State.Colors[0];
+            else
+                return State.Colors[1];
+        }
 
-        public static Color PrimaryColor { get; set; } = Color.Black;
+        public static Color GetSecondaryColor()
+        {
+            if (MouseTracker.PressedButton == MouseButtons.Left)
+                return State.Colors[1];
+            else
+                return State.Colors[0];
+        }
 
-        public static Color SecondaryColor { get; set; } = Color.Indigo;
+        public static Pen GetSelectedTool() => ((Pen)PaintTools[State.Tool].Clone()).With(t => t.Width = State.ToolThickness);
 
-        public static float ToolThickness { get; set; } = 1.0f;
+        public static Pen GetSpecificTool(PaintTool tool) => ((Pen)PaintTools[tool].Clone()).With(t => t.Width = State.ToolThickness);
 
-        public static Pen SelectedTool { get; set; } = PaintTools.Pencil;
+        public static void ChangeSelectedColor(Bitmap canvas)
+        {
+            Color selectedColor = canvas.GetPixel(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y);
+            if (MouseTracker.PressedButton == MouseButtons.Left)
+                State.Colors[0] = selectedColor;
+            else if (MouseTracker.PressedButton == MouseButtons.Right)
+                State.Colors[1] = selectedColor;
+        }
 
-        public static OrdinaryShape SelectedShape { get; set; }
+        public static Graphics ConfigureGraphics(Graphics graphics)
+        {
+            if (State.Tool == PaintTool.Pen)
+                graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-        public static ShapeDrawMode SelectedShapeDrawMode { get; set; } = ShapeDrawMode.OnlyOutline;
-
-        public static ShapeFillMode SelectedShapeFillMode { get; set; } = ShapeFillMode.Solid;
-
-        public static LinearGradientMode SelectedShapeFillLinearGradientMode { get; set; } = LinearGradientMode.Vertical;
-
-        public static Font FontForDrawingText { get; set; } = SystemFonts.DefaultFont;
+            return graphics;
+        }
     }
 }
