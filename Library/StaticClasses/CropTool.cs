@@ -29,39 +29,28 @@ namespace Library.StaticClasses
 
         private static void DoAllTheStuff(CanvasView Target, ref Bitmap canvas, ref Graphics canvasGraphics, Bitmap temp)
         {
+            Size newSize;
             Rectangle drawRect;
             if (MouseTracker.HorizontalDistance < 0 && MouseTracker.VerticalDistance > 0)
             {
                 if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
                 {
-                    Target.Size = new Size((int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.VerticalDistance * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(Math.Abs(MouseTracker.HorizontalDistance), MouseTracker.VerticalDistance);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(Math.Abs(MouseTracker.HorizontalDistance), MouseTracker.VerticalDistance);
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance, MouseTracker.MouseDownPoint.Y, Math.Abs(MouseTracker.HorizontalDistance), MouseTracker.VerticalDistance);
                 }
                 else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
                 {
-                    Target.Size = new Size((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.VerticalDistance * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(MouseTracker.MouseDownPoint.X, MouseTracker.VerticalDistance);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(MouseTracker.MouseDownPoint.X, MouseTracker.VerticalDistance);
                     drawRect = new Rectangle(0, MouseTracker.MouseDownPoint.Y, MouseTracker.MouseDownPoint.X, MouseTracker.VerticalDistance);
                 }
                 else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), 0)))
                 {
-                    Target.Size = new Size((int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(Math.Abs(MouseTracker.HorizontalDistance), canvas.Height - MouseTracker.MouseDownPoint.Y);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(Math.Abs(MouseTracker.HorizontalDistance), canvas.Height - MouseTracker.MouseDownPoint.Y);
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance, MouseTracker.MouseDownPoint.Y, Math.Abs(MouseTracker.HorizontalDistance), temp.Height - MouseTracker.MouseDownPoint.Y);
                 }
                 else
                 {
-                    Target.Size = new Size((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(MouseTracker.MouseDownPoint.X, canvas.Height - MouseTracker.MouseDownPoint.Y);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(MouseTracker.MouseDownPoint.X, canvas.Height - MouseTracker.MouseDownPoint.Y);
                     drawRect = new Rectangle(0, MouseTracker.MouseDownPoint.Y, MouseTracker.MouseDownPoint.X, temp.Height - MouseTracker.MouseDownPoint.Y);
                 }
             }
@@ -69,34 +58,22 @@ namespace Library.StaticClasses
             {
                 if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
                 {
-                    Target.Size = new Size((int)Math.Round(MouseTracker.HorizontalDistance * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(MouseTracker.HorizontalDistance, Math.Abs(MouseTracker.VerticalDistance));
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(MouseTracker.HorizontalDistance, Math.Abs(MouseTracker.VerticalDistance));
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance, MouseTracker.HorizontalDistance, Math.Abs(MouseTracker.VerticalDistance));
                 }
                 else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
                 {
-                    Target.Size = new Size((int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(canvas.Width - MouseTracker.MouseDownPoint.X, Math.Abs(MouseTracker.VerticalDistance));
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(canvas.Width - MouseTracker.MouseDownPoint.X, Math.Abs(MouseTracker.VerticalDistance));
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance, temp.Width - MouseTracker.MouseDownPoint.X, Math.Abs(MouseTracker.VerticalDistance));
                 }
                 else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), 0)))
                 {
-                    Target.Size = new Size((int)Math.Round(MouseTracker.HorizontalDistance * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(MouseTracker.HorizontalDistance, MouseTracker.MouseDownPoint.Y);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(MouseTracker.HorizontalDistance, MouseTracker.MouseDownPoint.Y);
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X, 0, MouseTracker.HorizontalDistance, MouseTracker.MouseDownPoint.Y);
                 }
                 else
                 {
-                    Target.Size = new Size((int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(canvas.Width - MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(canvas.Width - MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y);
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X, 0, temp.Width - MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y);
                 }
             }
@@ -104,34 +81,22 @@ namespace Library.StaticClasses
             {
                 if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
                 {
-                    Target.Size = new Size((int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(Math.Abs(MouseTracker.HorizontalDistance), Math.Abs(MouseTracker.VerticalDistance));
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(Math.Abs(MouseTracker.HorizontalDistance), Math.Abs(MouseTracker.VerticalDistance));
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance, MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance, Math.Abs(MouseTracker.HorizontalDistance), Math.Abs(MouseTracker.VerticalDistance));
                 }
                 else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
                 {
-                    Target.Size = new Size((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(MouseTracker.MouseDownPoint.X, Math.Abs(MouseTracker.VerticalDistance));
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(MouseTracker.MouseDownPoint.X, Math.Abs(MouseTracker.VerticalDistance));
                     drawRect = new Rectangle(0, MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance, MouseTracker.MouseDownPoint.X, Math.Abs(MouseTracker.VerticalDistance));
                 }
                 else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), 0)))
                 {
-                    Target.Size = new Size((int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(Math.Abs(MouseTracker.HorizontalDistance), MouseTracker.MouseDownPoint.Y);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(Math.Abs(MouseTracker.HorizontalDistance), MouseTracker.MouseDownPoint.Y);
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance, 0, Math.Abs(MouseTracker.HorizontalDistance), MouseTracker.MouseDownPoint.Y);
                 }
                 else
                 {
-                    Target.Size = new Size((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y);
                     drawRect = new Rectangle(0, 0, MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y);
                 }
             }
@@ -139,87 +104,84 @@ namespace Library.StaticClasses
             {
                 if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
                 {
-                    Target.Size = new Size((int)Math.Round(MouseTracker.HorizontalDistance * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.VerticalDistance * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(MouseTracker.HorizontalDistance, MouseTracker.VerticalDistance);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(MouseTracker.HorizontalDistance, MouseTracker.VerticalDistance);
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y, MouseTracker.HorizontalDistance, MouseTracker.VerticalDistance);
                 }
                 else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
                 {
-                    Target.Size = new Size((int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.VerticalDistance * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(canvas.Width - MouseTracker.MouseDownPoint.X, MouseTracker.VerticalDistance);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(canvas.Width - MouseTracker.MouseDownPoint.X, MouseTracker.VerticalDistance);
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y, temp.Width - MouseTracker.MouseDownPoint.X, MouseTracker.VerticalDistance);
                 }
                 else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), 0)))
                 {
-                    Target.Size = new Size((int)Math.Round(MouseTracker.HorizontalDistance * AppManager.State.ZoomFactor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(MouseTracker.HorizontalDistance, canvas.Height - MouseTracker.MouseDownPoint.Y);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(MouseTracker.HorizontalDistance, canvas.Height - MouseTracker.MouseDownPoint.Y);
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y, MouseTracker.HorizontalDistance, temp.Height - MouseTracker.MouseDownPoint.Y);
                 }
                 else
                 {
-                    Target.Size = new Size((int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor));
-                    canvas = new Bitmap(canvas.Width - MouseTracker.MouseDownPoint.X, canvas.Height - MouseTracker.MouseDownPoint.Y);
-                    canvasGraphics = Graphics.FromImage(canvas);
-                    canvasGraphics.Clear(Color.White);
+                    newSize = new Size(canvas.Width - MouseTracker.MouseDownPoint.X, canvas.Height - MouseTracker.MouseDownPoint.Y);
                     drawRect = new Rectangle(MouseTracker.MouseDownPoint.X, MouseTracker.MouseDownPoint.Y, temp.Width - MouseTracker.MouseDownPoint.X, temp.Height - MouseTracker.MouseDownPoint.Y);
                 }
             }
+            Target.Size = new Size((int)Math.Round(newSize.Width * AppManager.State.ZoomFactor), (int)Math.Round(newSize.Height * AppManager.State.ZoomFactor));
+            canvas = new Bitmap(newSize.Width, newSize.Height);
+            canvasGraphics = Graphics.FromImage(canvas);
+            canvasGraphics.Clear(Color.White);
             canvasGraphics.DrawImage(temp, 0, 0, drawRect, GraphicsUnit.Pixel);
         }
 
         public static void DrawPreviewBorder(CanvasView Target, Graphics graphics)
         {
+            float factor = AppManager.State.ZoomFactor;
+            Rectangle borderRectangle;
+
             if (MouseTracker.HorizontalDistance < 0 && MouseTracker.VerticalDistance > 0)
             {
-                if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.VerticalDistance * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
-                else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
-                    ControlPaint.DrawBorder(graphics, new Rectangle(0, (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.VerticalDistance * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
-                else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), 0)))
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
+                if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * factor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * factor))))
+                    borderRectangle = new Rectangle((int)Math.Round((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * factor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor), (int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * factor), (int)Math.Round(MouseTracker.VerticalDistance * factor));
+                else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * factor))))
+                    borderRectangle = new Rectangle(0, (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor), (int)Math.Round(MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(MouseTracker.VerticalDistance * factor));
+                else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * factor), 0)))
+                    borderRectangle = new Rectangle((int)Math.Round((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * factor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor), (int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * factor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * factor));
                 else
-                    ControlPaint.DrawBorder(graphics, new Rectangle(0, (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
+                    borderRectangle = new Rectangle(0, (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor), (int)Math.Round(MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * factor));
             }
             else if (MouseTracker.HorizontalDistance > 0 && MouseTracker.VerticalDistance < 0)
             {
-                if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round((MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.HorizontalDistance * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
-                else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round((MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
-                else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), 0)))
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), 0, (int)Math.Round(MouseTracker.HorizontalDistance * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
+                if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * factor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * factor))))
+                    borderRectangle = new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * factor), (int)Math.Round((MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * factor), (int)Math.Round(MouseTracker.HorizontalDistance * factor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * factor));
+                else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * factor))))
+                    borderRectangle = new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * factor), (int)Math.Round((MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * factor), (int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * factor));
+                else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * factor), 0)))
+                    borderRectangle = new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * factor), 0, (int)Math.Round(MouseTracker.HorizontalDistance * factor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor));
                 else
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), 0, (int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
+                    borderRectangle = new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * factor), 0, (int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor));
             }
             else if (MouseTracker.HorizontalDistance < 0 && MouseTracker.VerticalDistance < 0)
             {
-                if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round((MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
-                else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
-                    ControlPaint.DrawBorder(graphics, new Rectangle(0, (int)Math.Round((MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
-                else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), 0)))
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), 0, (int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
+                if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * factor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * factor))))
+                    borderRectangle = new Rectangle((int)Math.Round((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * factor), (int)Math.Round((MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * factor), (int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * factor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * factor));
+                else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * factor))))
+                    borderRectangle = new Rectangle(0, (int)Math.Round((MouseTracker.MouseDownPoint.Y + MouseTracker.VerticalDistance) * factor), (int)Math.Round(MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(Math.Abs(MouseTracker.VerticalDistance) * factor));
+                else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * factor), 0)))
+                    borderRectangle = new Rectangle((int)Math.Round((MouseTracker.MouseDownPoint.X + MouseTracker.HorizontalDistance) * factor), 0, (int)Math.Round(Math.Abs(MouseTracker.HorizontalDistance) * factor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor));
                 else
-                    ControlPaint.DrawBorder(graphics, new Rectangle(0, 0, (int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
+                    borderRectangle = new Rectangle(0, 0, (int)Math.Round(MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor));
 
             }
             else
             {
-                if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.HorizontalDistance * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.VerticalDistance * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
-                else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor))))
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor), (int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.VerticalDistance * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
-                else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor), 0)))
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.HorizontalDistance * AppManager.State.ZoomFactor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
+                if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * factor), (int)Math.Round(MouseTracker.MouseMovePoint.Y * factor))))
+                    borderRectangle = new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor), (int)Math.Round(MouseTracker.HorizontalDistance * factor), (int)Math.Round(MouseTracker.VerticalDistance * factor));
+                else if (Target.ClientRectangle.Contains(new Point(0, (int)Math.Round(MouseTracker.MouseMovePoint.Y * factor))))
+                    borderRectangle = new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor), (int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(MouseTracker.VerticalDistance * factor));
+                else if (Target.ClientRectangle.Contains(new Point((int)Math.Round(MouseTracker.MouseMovePoint.X * factor), 0)))
+                    borderRectangle = new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor), (int)Math.Round(MouseTracker.HorizontalDistance * factor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * factor));
                 else
-                    ControlPaint.DrawBorder(graphics, new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor), (int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor)), Color.Blue, ButtonBorderStyle.Dashed);
+                    borderRectangle = new Rectangle((int)Math.Round(MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(MouseTracker.MouseDownPoint.Y * factor), (int)Math.Round(Target.Width - MouseTracker.MouseDownPoint.X * factor), (int)Math.Round(Target.Height - MouseTracker.MouseDownPoint.Y * factor));
             }
+
+            ControlPaint.DrawBorder(graphics, borderRectangle, Color.Blue, ButtonBorderStyle.Dashed);
         }
     }
 }
