@@ -1,4 +1,5 @@
 ﻿using Library.Enums;
+using Library.Miscellaneous;
 using System.Drawing.Drawing2D;
 
 namespace Library.StaticClasses
@@ -7,9 +8,9 @@ namespace Library.StaticClasses
     {
         private static Pen Tool { get; set; }
 
-        private static GraphicsPath CanvasDrawPath { get; set; }
+        private static GraphicsPath TrueCurvePath { get; set; } = new GraphicsPath();
 
-        private static GraphicsPath CanvasViewDrawPath { get; set; }
+        private static GraphicsPath TemporaryCurvePath { get; set; }
 
         private static bool curveDrawNotStarted = true;
 
@@ -28,128 +29,145 @@ namespace Library.StaticClasses
 
         public static void Activate()
         {
-            Tool = (Pen)AppManager.SelectedTool.Clone();
-            SetThickness();
-            DetermineColor();
+            Tool = AppManager.GetSelectedTool().With(t => t.Color = AppManager.GetPrimaryColor());
         }
 
-        public static void CreateCurve(Graphics graphics)
+        public static void CreateTrueCurve(Graphics graphics)
         {
-            PointF[] temp;
+            var lastCurvePath = TrueCurvePath;
+            TrueCurvePath = new GraphicsPath();
             switch (CurrentIteration)
             {
                 case 1:
-                    CanvasDrawPath = new GraphicsPath();
-                    CanvasDrawPath.AddBezier(
+                    TrueCurvePath.AddBezier(
                                 MouseTracker.MouseDownPoint,
-                                new PointF(MouseTracker.MouseDownPoint.X + (MouseTracker.MouseUpPoint.X - MouseTracker.MouseDownPoint.X) / 3, MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseUpPoint.Y - MouseTracker.MouseDownPoint.Y) / 3),
-                                new PointF(MouseTracker.MouseDownPoint.X + (MouseTracker.MouseUpPoint.X - MouseTracker.MouseDownPoint.X) / 3 * 2, MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseUpPoint.Y - MouseTracker.MouseDownPoint.Y) / 3 * 2),
-                                MouseTracker.MouseUpPoint);
+                                new PointF(
+                                    MouseTracker.MouseDownPoint.X + (MouseTracker.MouseUpPoint.X - MouseTracker.MouseDownPoint.X) / 3, 
+                                    MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseUpPoint.Y - MouseTracker.MouseDownPoint.Y) / 3
+                                    ),
+                                new PointF(
+                                    MouseTracker.MouseDownPoint.X + (MouseTracker.MouseUpPoint.X - MouseTracker.MouseDownPoint.X) / 3 * 2, 
+                                    MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseUpPoint.Y - MouseTracker.MouseDownPoint.Y) / 3 * 2
+                                    ),
+                                MouseTracker.MouseUpPoint
+                                );
                     CurveDrawNotStarted = false;
                     CurrentIteration++;
                     break;
                 case 2:
-                    temp = [CanvasDrawPath.PathPoints[0], CanvasDrawPath.PathPoints[2], CanvasDrawPath.PathPoints[3]];
-                    CanvasDrawPath.Reset();
-                    CanvasDrawPath.AddBezier(temp[0], MouseTracker.MouseUpPoint, temp[1], temp[2]);
+                    TrueCurvePath.AddBezier(lastCurvePath.PathPoints[0], MouseTracker.MouseUpPoint, lastCurvePath.PathPoints[1], lastCurvePath.PathPoints[2]);
                     CurrentIteration++;
                     break;
                 case 3:
-                    temp = [CanvasDrawPath.PathPoints[0], CanvasDrawPath.PathPoints[1], CanvasDrawPath.PathPoints[3]];
-                    CanvasDrawPath.Reset();
-                    CanvasDrawPath.AddBezier(temp[0], temp[1], MouseTracker.MouseUpPoint, temp[2]);
-                    if (AppManager.SelectedShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
-                        return;
-                    if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
-                    {
-                        var savedGraphicsState = graphics.Save();
-                        ConfigureGraphics(graphics);
-
-                        graphics.DrawPath(Tool, CanvasDrawPath);
-
-                        graphics.Restore(savedGraphicsState);
-                    }
-                    CurveDrawNotStarted = true;
+                    TrueCurvePath.AddBezier(lastCurvePath.PathPoints[0], lastCurvePath.PathPoints[1], MouseTracker.MouseUpPoint, lastCurvePath.PathPoints[2]);
+                    DrawCurve(graphics);
                     break;
             }
         }
 
-        public static void DrawCurrentCurveOnCanvas(Graphics graphics)
+        public static void DrawCurve(Graphics graphics, bool trueCurve = true)
         {
-            if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
-            {
-                var savedGraphicsState = graphics.Save();
+            if (AppManager.State.ShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
+                return;
 
-                ConfigureGraphics(graphics);
-                graphics.DrawPath(Tool, CanvasDrawPath);
+            if (AppManager.State.ShapeDrawMode != ShapeDrawMode.OnlyFill)
+            {
+                float factor;
+
+                if (trueCurve)
+                    factor = 1.0f;
+                else
+                    factor = AppManager.State.ZoomFactor;
+
+                Tool.Width *= factor;
+
+                var savedGraphicsState = graphics.Save();
+                AppManager.ConfigureGraphics(graphics);
+
+                if (trueCurve)
+                    graphics.DrawPath(Tool, TrueCurvePath);
+                else
+                    graphics.DrawPath(Tool, TemporaryCurvePath);
 
                 graphics.Restore(savedGraphicsState);
+
+                Tool.Width /= factor;
+            }
+
+            if (trueCurve)
+            {
+                CurveDrawNotStarted = true;
+                Tool.Dispose();
             }
         }
 
         public static void CreateTemporaryCurve(Graphics graphics)
         {
-            if (AppManager.SelectedShapeDrawMode == ShapeDrawMode.NoOutlineAndFill)
-                return;
-
+            TemporaryCurvePath = new GraphicsPath();
             switch (CurrentIteration)
             {
                 case 1:
-                    CanvasViewDrawPath = new GraphicsPath();
-                    CanvasViewDrawPath.AddBezier(
-                                new PointF(MouseTracker.MouseDownPoint.X * AppManager.ZoomFactor, MouseTracker.MouseDownPoint.Y * AppManager.ZoomFactor),
-                                new PointF((MouseTracker.MouseDownPoint.X + (MouseTracker.MouseMovePoint.X - MouseTracker.MouseDownPoint.X) / 3) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseMovePoint.Y - MouseTracker.MouseDownPoint.Y) / 3) * AppManager.ZoomFactor),
-                                new PointF((MouseTracker.MouseDownPoint.X + (MouseTracker.MouseMovePoint.X - MouseTracker.MouseDownPoint.X) / 3 * 2) * AppManager.ZoomFactor, (MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseMovePoint.Y - MouseTracker.MouseDownPoint.Y) / 3 * 2) * AppManager.ZoomFactor),
-                                new PointF(MouseTracker.MouseMovePoint.X * AppManager.ZoomFactor, MouseTracker.MouseMovePoint.Y * AppManager.ZoomFactor));
+                    TemporaryCurvePath.AddBezier(
+                                new PointF(
+                                    MouseTracker.MouseDownPoint.X * AppManager.State.ZoomFactor, 
+                                    MouseTracker.MouseDownPoint.Y * AppManager.State.ZoomFactor
+                                    ),
+                                new PointF(
+                                    (MouseTracker.MouseDownPoint.X + (MouseTracker.MouseMovePoint.X - MouseTracker.MouseDownPoint.X) / 3) * AppManager.State.ZoomFactor, 
+                                    (MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseMovePoint.Y - MouseTracker.MouseDownPoint.Y) / 3) * AppManager.State.ZoomFactor
+                                    ),
+                                new PointF(
+                                    (MouseTracker.MouseDownPoint.X + (MouseTracker.MouseMovePoint.X - MouseTracker.MouseDownPoint.X) / 3 * 2) * AppManager.State.ZoomFactor, 
+                                    (MouseTracker.MouseDownPoint.Y + (MouseTracker.MouseMovePoint.Y - MouseTracker.MouseDownPoint.Y) / 3 * 2) * AppManager.State.ZoomFactor
+                                    ),
+                                new PointF(
+                                    MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor, 
+                                    MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor
+                                    )
+                                );
                     break;
                 case 2:
-                    CanvasViewDrawPath.Reset();
-                    CanvasViewDrawPath.AddBezier(
-                                new PointF(CanvasDrawPath.PathPoints[0].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[0].Y * AppManager.ZoomFactor),
-                                new PointF(MouseTracker.MouseMovePoint.X * AppManager.ZoomFactor, MouseTracker.MouseMovePoint.Y * AppManager.ZoomFactor),
-                                new PointF(CanvasDrawPath.PathPoints[2].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[2].Y * AppManager.ZoomFactor),
-                                new PointF(CanvasDrawPath.PathPoints[3].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[3].Y * AppManager.ZoomFactor));
+                    TemporaryCurvePath.AddBezier(
+                                new PointF(
+                                    TrueCurvePath.PathPoints[0].X * AppManager.State.ZoomFactor,
+                                    TrueCurvePath.PathPoints[0].Y * AppManager.State.ZoomFactor
+                                    ),
+                                new PointF(
+                                    MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor, 
+                                    MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor
+                                    ),
+                                new PointF(
+                                    TrueCurvePath.PathPoints[2].X * AppManager.State.ZoomFactor,
+                                    TrueCurvePath.PathPoints[2].Y * AppManager.State.ZoomFactor
+                                    ),
+                                new PointF(
+                                    TrueCurvePath.PathPoints[3].X * AppManager.State.ZoomFactor,
+                                    TrueCurvePath.PathPoints[3].Y * AppManager.State.ZoomFactor
+                                    )
+                                );
                     break;
                 case 3:
-                    CanvasViewDrawPath.Reset();
-                    CanvasViewDrawPath.AddBezier(
-                                new PointF(CanvasDrawPath.PathPoints[0].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[0].Y * AppManager.ZoomFactor),
-                                new PointF(CanvasDrawPath.PathPoints[1].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[1].Y * AppManager.ZoomFactor),
-                                new PointF(MouseTracker.MouseMovePoint.X * AppManager.ZoomFactor, MouseTracker.MouseMovePoint.Y * AppManager.ZoomFactor),
-                                new PointF(CanvasDrawPath.PathPoints[3].X * AppManager.ZoomFactor, CanvasDrawPath.PathPoints[3].Y * AppManager.ZoomFactor));
+                    TemporaryCurvePath.AddBezier(
+                                new PointF(
+                                    TrueCurvePath.PathPoints[0].X * AppManager.State.ZoomFactor, 
+                                    TrueCurvePath.PathPoints[0].Y * AppManager.State.ZoomFactor
+                                    ),
+                                new PointF(
+                                    TrueCurvePath.PathPoints[1].X * AppManager.State.ZoomFactor, TrueCurvePath.PathPoints[1].Y * AppManager.State.ZoomFactor
+                                    ),
+                                new PointF(
+                                    MouseTracker.MouseMovePoint.X * AppManager.State.ZoomFactor, 
+                                    MouseTracker.MouseMovePoint.Y * AppManager.State.ZoomFactor
+                                    ),
+                                new PointF(
+                                    TrueCurvePath.PathPoints[3].X * AppManager.State.ZoomFactor, 
+                                    TrueCurvePath.PathPoints[3].Y * AppManager.State.ZoomFactor
+                                    )
+                                );
                     break;
             }
 
-            DrawCurrentCurveOnCanvasView(graphics);
-        }
-
-        public static void DrawCurrentCurveOnCanvasView(Graphics graphics)
-        {
-            if (AppManager.SelectedShapeDrawMode != ShapeDrawMode.OnlyFill)
-            {
-                var savedGraphicsState = graphics.Save();
-                ConfigureGraphics(graphics);
-                Tool.Width *= AppManager.ZoomFactor;
-                graphics.DrawPath(Tool, CanvasViewDrawPath);
-                Tool.Width /= AppManager.ZoomFactor;
-                graphics.Restore(savedGraphicsState);
-            }
-        }
-
-        private static void SetThickness() => Tool.Width = AppManager.ToolThickness;
-
-        private static void DetermineColor()
-        {
-            if (MouseTracker.PressedButton == MouseButtons.Left)
-                Tool.Color = AppManager.PrimaryColor;
-            else if (MouseTracker.PressedButton == MouseButtons.Right)
-                Tool.Color = AppManager.SecondaryColor;
-        }
-
-        private static void ConfigureGraphics(Graphics graphics)
-        {
-            if (AppManager.SelectedTool == PaintTools.Pen)
-                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            DrawCurve(graphics, false);
         }
     }
 }

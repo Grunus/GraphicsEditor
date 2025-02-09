@@ -10,9 +10,9 @@
             Color newColor = Color.Black;
 
             if (MouseTracker.PressedButton == MouseButtons.Left)
-                newColor = AppManager.PrimaryColor;
+                newColor = AppManager.GetPrimaryColor();
             else if (MouseTracker.PressedButton == MouseButtons.Right)
-                newColor = AppManager.SecondaryColor;
+                newColor = AppManager.GetSecondaryColor();
 
             if (oldColor.ToArgb() == newColor.ToArgb())
                 return;
