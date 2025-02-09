@@ -1028,11 +1028,11 @@ namespace Editor
         private void MainSpace_Paint(object sender, PaintEventArgs e)
         {
             var pos = MainSpace.PointToClient(Cursor.Position);
-            if (canvasView.IsDraggingRightSide)
+            if (canvasView.DragHandle == DragHandle.RightSide)
                 ControlPaint.DrawBorder(e.Graphics, new Rectangle(canvasView.Left, canvasView.Top, pos.X - canvasView.Left, canvasView.Height), Color.Black, ButtonBorderStyle.Dotted);
-            if (canvasView.IsDraggingBottomSide)
+            if (canvasView.DragHandle == DragHandle.BottomSide)
                 ControlPaint.DrawBorder(e.Graphics, new Rectangle(canvasView.Left, canvasView.Top, canvasView.Width, pos.Y - canvasView.Top), Color.Black, ButtonBorderStyle.Dotted);
-            else if (canvasView.IsDraggingBottomRightCorner)
+            else if (canvasView.DragHandle == DragHandle.BottomRightCorner)
                 ControlPaint.DrawBorder(e.Graphics, new Rectangle(canvasView.Left, canvasView.Top, pos.X - canvasView.Left, pos.Y - canvasView.Top), Color.Black, ButtonBorderStyle.Dotted);
         }
 

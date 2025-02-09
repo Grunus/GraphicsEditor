@@ -1,4 +1,6 @@
-﻿namespace Library.CustomControls
+﻿using Library.Enums;
+
+namespace Library.CustomControls
 {
     public class CanvasView : PictureBox
     {
@@ -8,11 +10,7 @@
 
         public bool IsResizing { get; set; } = false;
 
-        public bool IsDraggingRightSide { get; set; } = false;
-
-        public bool IsDraggingBottomSide { get; set; } = false;
-
-        public bool IsDraggingBottomRightCorner { get; set; } = false;
+        public DragHandle DragHandle { get; set; } = DragHandle.None;
 
         public CanvasView() : base() 
         {
@@ -25,17 +23,17 @@
             if (e.Location.X >= Width - grab && e.Location.Y <= Height - grab)
             {
                 IsResizing = true;
-                IsDraggingRightSide = true;
+                DragHandle = DragHandle.RightSide;
             }
             else if (e.Location.Y >= Height - grab && e.Location.X <= Width - grab)
             {
                 IsResizing = true;
-                IsDraggingBottomSide = true;
+                DragHandle = DragHandle.BottomSide;
             }    
             else if (e.Location.X >= Width - grab && e.Location.Y >= Height - grab)
             {
                 IsResizing = true;
-                IsDraggingBottomRightCorner = true;
+                DragHandle = DragHandle.BottomRightCorner;
             }
             base.OnMouseDown(e);
         }
@@ -59,17 +57,17 @@
             }
             else
             {
-                if (IsDraggingRightSide)
+                if (DragHandle == DragHandle.RightSide)
                 {
                     PointForResizing = new Point(e.Location.X >= 16 ? e.Location.X : 16, Height);
                     Cursor.Current = Cursors.SizeWE;
                 }
-                else if (IsDraggingBottomSide)
+                else if (DragHandle == DragHandle.BottomSide)
                 {
                     PointForResizing = new Point(Width, e.Location.Y >= 16 ? e.Location.Y : 16);
                     Cursor.Current = Cursors.SizeNS;
                 }
-                else if (IsDraggingBottomRightCorner)
+                else if (DragHandle == DragHandle.BottomRightCorner)
                 {
                     PointForResizing = new Point(e.Location.X >= 16 ? e.Location.X : 16, e.Location.Y >= 16 ? e.Location.Y : 16);
                     Cursor.Current = Cursors.SizeNWSE;
@@ -84,20 +82,20 @@
             base.OnMouseUp(e);
             if (IsResizing)
             {
-                if (IsDraggingRightSide)
+                if (DragHandle == DragHandle.RightSide)
                 {
                     Size = new Size(e.Location.X >= 16 ? e.Location.X : 16, Height);
-                    IsDraggingRightSide = false;
+                    DragHandle = DragHandle.RightSide;
                 }
-                else if (IsDraggingBottomSide)
+                else if (DragHandle == DragHandle.BottomSide)
                 {
                     Size = new Size(Width, e.Location.Y >= 16 ? e.Location.Y : 16);
-                    IsDraggingBottomSide = false;
+                    DragHandle = DragHandle.BottomSide;
                 }
-                else if (IsDraggingBottomRightCorner)
+                else if (DragHandle == DragHandle.BottomRightCorner)
                 {
                     Size = new Size(e.Location.X >= 16 ? e.Location.X : 16, e.Location.Y >= 16 ? e.Location.Y : 16);
-                    IsDraggingBottomRightCorner = false;
+                    DragHandle = DragHandle.BottomRightCorner;
                 }
                 IsResizing = false;
                 Parent.Refresh();
